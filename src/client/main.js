@@ -1,9 +1,23 @@
-const webSocket = new WebSocket('ws://localhost:443/');
-const userName = document.querySelector('#name')
+const webSocket = new WebSocket('ws://localhost:3001');
+const textfieldName = document.querySelector('#nameTextField')
+const textfieldMessage = document.querySelector('#messageField')
 const chat = document.querySelector("#chat")
-webSocket.addEventListener("message", (e)=>{
-    chat.value = e.data;
+const sendButton = document.querySelector("#sendMessage")
+const saveNameBtn = document.querySelector("#saveName")
+
+webSocket.addEventListener("open",()=>{
+    console.log("Client connected Succesfuly")
 })
-document.querySelector('#saveName').addEventListener("click",e=>{
-    userName.value = 
+    //SAVING NAME, SENDING TO SERVER
+saveNameBtn.addEventListener("click",e=>{
+    webSocket.send("[NAME]" + textfieldName.value) 
+})
+    //SENDING MESSAGE TO SERVER
+sendButton.addEventListener("click", e=>{
+    webSocket.send(textfieldMessage.value)
+})
+    //RECEIVING MESSAGE FROM SERVER
+webSocket.addEventListener("message", (e)=>{
+    console.log("received message",e, e.data)
+    chat.textContent += e.data
 })
