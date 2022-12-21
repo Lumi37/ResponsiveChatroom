@@ -18,6 +18,6 @@ sendButton.addEventListener("click", e=>{
 })
     //RECEIVING MESSAGE FROM SERVER
 webSocket.addEventListener("message", (e)=>{
-    console.log("received message",e, e.data)
+    console.log("received message",e.data)
     chat.textContent += e.data
 })

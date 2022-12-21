@@ -7,6 +7,7 @@ server.use(express.static('../client/'))
 let ConnectedClients = 0
 let users = [];
 wsServer.on("connection", (ws)=>{
+    let userName
     users.push(ws)
     console.log("New client Connected!")
     ConnectedClients += 1 
@@ -16,23 +17,24 @@ wsServer.on("connection", (ws)=>{
     ws.on("message",  clientMessage=>{
         let data = String(clientMessage)
         if (data.includes("[NAME]") == true){ 
-            let userName = data.replace("[NAME]","")
+            userName = data.replace("[NAME]","")
             console.log(`User ${userName} Connected!`)
         }else{
-            ws.send(data)
-            
-        }
-            
-        console.log("Received from Client : ",data)
-        
+            ws.send(data)        
+        }  
+        console.log("Received from Client : ",data)   
     })
+
     console.log(`Connected Clients : ${ConnectedClients}`)
     
         // WHEN CLOSING
     
     ws.on('close', ()=>{                                        
         ConnectedClients -= 1
-        console.log(`${userName} Disconnected!`)
+        if(userName != undefined)
+            console.log(`${userName} Disconnected!`)
+        else
+            console.log('A client Disconnected!')
         console.log(`Connected Clients : ${ConnectedClients}`)
     })
 })
