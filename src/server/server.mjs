@@ -6,18 +6,18 @@ const wsServer = new WebSocketServer({port:3001})
 server.use(express.static('../client/'))
 let ConnectedClients = 0
 let users = [];
-wsServer.ClientID = function(){
-    function idGen(){
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-    return idGen() + idGen() + '-' + idGen()
-}
+// wsServer.ClientID = function(){
+//     function idGen(){
+//         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+//     }
+//     return idGen() + idGen() + '-' + idGen()
+// }
 
 
 
 
 wsServer.on("connection", (ws)=>{
-    ws.id = wsServer.ClientID(); // GENERATING UNIQUE CLIENT ID 
+   // ws.id = wsServer.ClientID(); // GENERATING UNIQUE CLIENT ID 
     let userName
      //GET DATE   (.getDate for days, .getMonth()+1 for months, .getFullYear() for year)
     let currentdate = new Date(); 
