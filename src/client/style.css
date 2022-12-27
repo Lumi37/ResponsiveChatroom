@@ -1,0 +1,21 @@
+#chat {
+    width: 500px;
+    height: 500px;
+    word-wrap: break-word;
+    overflow-y: scroll;
+    border: 1px solid blue;
+}
+
+p {
+    color: #f0fffe;
+    padding: 6px;
+    margin: 8px;
+    background-color: blue;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+/* 
+#messageField {
+    width: ;
+} */

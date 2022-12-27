@@ -6,8 +6,18 @@ const wsServer = new WebSocketServer({port:3001})
 server.use(express.static('../client/'))
 let ConnectedClients = 0
 let users = [];
-//let usersName = [];
+wsServer.ClientID = function(){
+    function idGen(){
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return idGen() + idGen() + '-' + idGen()
+}
+
+
+
+
 wsServer.on("connection", (ws)=>{
+    ws.id = wsServer.ClientID(); // GENERATING UNIQUE CLIENT ID 
     let userName
      //GET DATE   (.getDate for days, .getMonth()+1 for months, .getFullYear() for year)
     let currentdate = new Date(); 
@@ -27,9 +37,9 @@ wsServer.on("connection", (ws)=>{
                 console.log(`User ${userName} Connected!`)
             }else{
                 if(userName != undefined)
-                   ws.send(`${datetime} ${userName}: ${data}<br>`)// ws.send(datetime+" "+ userName+": "+data+"<br>")        
+                   ws.send(`${datetime} ${userName}: ${data}`)// ws.send(datetime+" "+ userName+": "+data+"<br>")        
                 else{
-                    ws.send(`${datetime} Unknown_User: ${data}<br>`)//ws.send(datetime+" "+ userName+": "+data+"<br>")
+                    ws.send(`${datetime} Unknown_User: ${data}`)//ws.send(datetime+" "+ userName+": "+data+"<br>")
                 
                 }        
             }  
