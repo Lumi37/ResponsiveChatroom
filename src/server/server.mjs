@@ -1,23 +1,19 @@
 import express from 'express'
+import fs from 'fs/promises'
 import { WebSocketServer } from 'ws'
 
 const server = express()
 const wsServer = new WebSocketServer({port:3001})
 server.use(express.static('../client/'))
+server.use(express.json());
 let ConnectedClients = 0
 let users = [];
-// wsServer.ClientID = function(){
-//     function idGen(){
-//         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-//     }
-//     return idGen() + idGen() + '-' + idGen()
-// }
 
 
 
 
 wsServer.on("connection", (ws)=>{
-   // ws.id = wsServer.ClientID(); // GENERATING UNIQUE CLIENT ID 
+   
     let userName
      //GET DATE   (.getDate for days, .getMonth()+1 for months, .getFullYear() for year)
     let currentdate = new Date(); 
@@ -27,24 +23,18 @@ wsServer.on("connection", (ws)=>{
     ConnectedClients += 1 
    
         // MESSAGES
-   
+
     ws.on("message",  clientMessage=>{
-        let data = String(clientMessage)
+        let data = JSON.parse(clientMessage)
+        console.log(data)
         users.forEach((ws,i)=>{
-            if (data.includes("[NAME]") == true){ 
-                userName = data.replace("[NAME]","")
-                //usersName.push(userName)
-                console.log(`User ${userName} Connected!`)
-            }else{
-                if(userName != undefined)
-                   ws.send(`${datetime} ${userName}: ${data}`)// ws.send(datetime+" "+ userName+": "+data+"<br>")        
-                else{
-                    ws.send(`${datetime} Unknown_User: ${data}`)//ws.send(datetime+" "+ userName+": "+data+"<br>")
-                
-                }        
-            }  
-            console.log("Received from Client : ",data)   
-            
+          if (MessageTypeIdentifier(data.type)=='name')
+           userName = handleIfName(data.text);
+          else if(MessageTypeIdentifier(data.type)=='message')
+            ws.send(JSON.stringify(handleIfMessage(data.text,  userName, datetime)));
+          else{
+            console.log('error unknown type of data.')
+          } 
         })
     })
 
@@ -62,3 +52,24 @@ wsServer.on("connection", (ws)=>{
     })
 })
 server.listen(3000, ()=>console.log("listens to 3000") )
+
+
+function MessageTypeIdentifier(type){
+ switch(type){
+    case 'name':
+        return 'name';
+    case 'message':
+        return 'message';
+    default:
+        return 'error';
+ }
+}
+function handleIfName(name){
+    console.log(`User ${name} Connected!`)
+    return name;
+}
+
+function handleIfMessage(message, Name, currentdatetime){
+    let messageToClient = {date:currentdatetime, name:Name, text:message,type:'message'}
+    return messageToClient
+}
