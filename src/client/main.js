@@ -6,24 +6,29 @@ const textfieldMessage = document.querySelector('#messageField')
 const chat = document.querySelector("#chat")
 const sendButton = document.querySelector("#sendMessage")
 const saveNameBtn = document.querySelector("#saveName")
-
+let clientID = localStorage.getItem('ClientID')
 webSocket.addEventListener("open",()=>{
     console.log("Client connected Succesfuly")
-    try{
-        const user = JSON.parse(localStorage.getItem('user'))
-        document.querySelector("#hello").textContent = 'Hello ' + user.name
-        webSocket.send('[NAME]' + user.name )
-    }catch(err){
-        console.log("New User")
+   
+    if(!(localStorage.getItem('ClientID')))
+       window.localStorage.setItem('ClientID',ClientUniqueIDGenerator()) //REGISTER ID TO STORAGE
+    else{
+        const user = localStorage.getItem('name')
+        let clientID = localStorage.getItem('ClientID');
+        let messageToServer = {text:user, type:'name',ID:clientID}
+        document.querySelector("#hello").textContent = 'Hello ' + user
+        webSocket.send(JSON.stringify(messageToServer))
     }
+
 
 })
     //SAVING NAME, SENDING TO SERVER
 saveNameBtn.addEventListener("click",e=>{
-
-    let LS = textfieldName.value //LOCALSTORAGE
-    let messageToServer = { text:LS, type:'name'}
-    //window.localStorage.setItem('user',JSON.stringify({name:LS}))
+    let user = textfieldName.value 
+    let clientID = localStorage.getItem('ClientID')
+    let messageToServer = { text:user, type:'name', UniqueID:clientID}
+    window.localStorage.setItem('name',user) //REGISTER NAME TO STORAGE
+    window.localStorage.setItem('ClientID',ClientUniqueIDGenerator())
     webSocket.send(JSON.stringify(messageToServer))
     document.querySelector("#hello").textContent = 'Hello ' + textfieldName.value
 })
@@ -66,4 +71,11 @@ if (message.name == textfieldName.value)
     chat.innerHTML += `<p class="user">${message.date} ${message.name}: ${message.text}</p><br>`
 else
     chat.innerHTML += `<p class="otheruser">${message.date} ${message.name}: ${message.text}</p><br>`
+}
+
+function ClientUniqueIDGenerator(){
+    function idGen(){
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return idGen() + idGen() + '-' + idGen()
 }

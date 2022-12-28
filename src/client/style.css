@@ -3,6 +3,17 @@ body {
     color: aqua;
 }
 
+#container {
+    width: max-content;
+    border: 1px yellow;
+}
+
+#userList {
+    width: 500px;
+    height: 500px;
+    border: 1px #fa1212;
+}
+
 #chat {
     width: 500px;
     height: 500px;

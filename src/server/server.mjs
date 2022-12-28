@@ -13,8 +13,9 @@ let users = [];
 
 
 wsServer.on("connection", (ws)=>{
-   
+    
     let userName
+    ws.id = null
      //GET DATE   (.getDate for days, .getMonth()+1 for months, .getFullYear() for year)
     let currentdate = new Date(); 
     let datetime =currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
@@ -26,19 +27,31 @@ wsServer.on("connection", (ws)=>{
 
     ws.on("message",  clientMessage=>{
         let data = JSON.parse(clientMessage)
+
         console.log(data)
         users.forEach((ws,i)=>{
-          if (MessageTypeIdentifier(data.type)=='name')
-           userName = handleIfName(data.text);
-          else if(MessageTypeIdentifier(data.type)=='message')
-            ws.send(JSON.stringify(handleIfMessage(data.text,  userName, datetime)));
-          else{
-            console.log('error unknown type of data.')
+            if(!(ws.id == data.UniqueID)){
+                console.log("*36* HAPPENS")
+                ws.id = data.UniqueID
+            }
+            else{
+                console.log("*40* HAPPENS")
+                ws = users[i]
+                users.pop()
+            }
+            if (MessageTypeIdentifier(data.type)=='name'){
+                userName = handleIfName(data.text);
+                ws.id = data.UniqueID
+            }
+            else if (MessageTypeIdentifier(data.type)=='message')
+                ws.send(JSON.stringify(handleIfMessage(data.text,  userName, datetime)));
+            else{
+                console.log('error unknown type of data.')
           } 
         })
     })
 
-    console.log(`Connected Clients : ${ConnectedClients}`)
+    console.log(`*41*Connected Clients : ${ConnectedClients}\nList: ${users.length}`)
     
         // WHEN CLOSING
     
@@ -48,22 +61,25 @@ wsServer.on("connection", (ws)=>{
             console.log(`${userName} Disconnected!`)
         else
             console.log('A client Disconnected!')
-        console.log(`Connected Clients : ${ConnectedClients}`)
+        console.log(`*51*Connected Clients : ${ConnectedClients}\nList: ${users.length}`)
     })
 })
 server.listen(3000, ()=>console.log("listens to 3000") )
 
 
 function MessageTypeIdentifier(type){
- switch(type){
-    case 'name':
-        return 'name';
-    case 'message':
-        return 'message';
-    default:
-        return 'error';
- }
+console.log("*73* HAPPENS")
+    switch(type){
+        case 'name':
+            return 'name';
+        case 'message':
+            return 'message';
+        default:
+            console.log(type)
+            return 'error';
+    }
 }
+
 function handleIfName(name){
     console.log(`User ${name} Connected!`)
     return name;
@@ -73,3 +89,4 @@ function handleIfMessage(message, Name, currentdatetime){
     let messageToClient = {date:currentdatetime, name:Name, text:message,type:'message'}
     return messageToClient
 }
+
