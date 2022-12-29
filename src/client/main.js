@@ -1,59 +1,57 @@
 
-
 const webSocket = new WebSocket('ws://localhost:3001');
+const refreshList = document.querySelector('#refreshList')
 const textfieldName = document.querySelector('#nameTextField')
 const textfieldMessage = document.querySelector('#messageField')
 const chat = document.querySelector("#chat")
 const sendButton = document.querySelector("#sendMessage")
 const saveNameBtn = document.querySelector("#saveName")
 let clientID = localStorage.getItem('ClientID')
+
+    //SENDING INFO FROM LOCALSTORAGE
 webSocket.addEventListener("open",()=>{
     console.log("Client connected Succesfuly")
-   
-    if(!(localStorage.getItem('ClientID')))
-       window.localStorage.setItem('ClientID',ClientUniqueIDGenerator()) //REGISTER ID TO STORAGE
-    else{
-        const user = localStorage.getItem('name')
-        let clientID = localStorage.getItem('ClientID');
-        let messageToServer = {text:user, type:'name',ID:clientID}
-        document.querySelector("#hello").textContent = 'Hello ' + user
-        webSocket.send(JSON.stringify(messageToServer))
-    }
-
-
+    sendInfoFromLocalStorage()
+    refreshList()
 })
     //SAVING NAME, SENDING TO SERVER
-saveNameBtn.addEventListener("click",e=>{
-    let user = textfieldName.value 
-    let clientID = localStorage.getItem('ClientID')
-    let messageToServer = { text:user, type:'name', UniqueID:clientID}
-    window.localStorage.setItem('name',user) //REGISTER NAME TO STORAGE
-    window.localStorage.setItem('ClientID',ClientUniqueIDGenerator())
-    webSocket.send(JSON.stringify(messageToServer))
-    document.querySelector("#hello").textContent = 'Hello ' + textfieldName.value
+saveNameBtn.addEventListener('click',e=>{
+    sendSaveName()
 })
     //SENDING MESSAGE TO SERVER
 sendButton.addEventListener("click", e=>{
-    let ChatText = textfieldMessage.value;
-    let userName = textfieldName.value;
-    let messageToServer = { text:ChatText, name:userName, type:'message'}
-    webSocket.send(JSON.stringify(messageToServer))
+    sendMessageToServer()
+})
+textfieldMessage.addEventListener('keypress',e=>{
+    const key= e.key
+    if(key == 'Enter'){
+        sendMessageToServer()
+    }       
 })
     //RECEIVING MESSAGE FROM SERVER
 webSocket.addEventListener("message", (e)=>{
     console.log("received message",e.data)
     let data = JSON.parse(e.data)
-    if(MessageType(data.type) == 'message')
+    let typeofMessage = MessageType(data.type)
+    
+    if(typeofMessage == 'message')
         handleIfMessage(data) 
-        //chat.innerHTML += `<p>${e.data}</p><br>`
+    // if(textfieldMessage == 'list')
+    //     handleIfList()
+
 })
 
 document.querySelector('#clear').addEventListener("click",(e)=>{
     chat.innerHTML = ''
 })
-document.querySelector('#ls').addEventListener('click',(e)=>{
 
-})
+
+
+
+
+
+
+
 
 function MessageType(type){
     switch (type){
@@ -73,9 +71,44 @@ else
     chat.innerHTML += `<p class="otheruser">${message.date} ${message.name}: ${message.text}</p><br>`
 }
 
-function ClientUniqueIDGenerator(){
+    //GENERATES RANDOM ID
+function clientUniqueIDGenerator(){
     function idGen(){
         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
     return idGen() + idGen() + '-' + idGen()
+}
+
+function sendInfoFromLocalStorage(){
+    if(!(localStorage.getItem('ClientID')))
+       window.localStorage.setItem('ClientID',clientUniqueIDGenerator()) //REGISTER ID TO STORAGE
+    else{
+        const user = localStorage.getItem('name')
+        let clientID = localStorage.getItem('ClientID');
+        let messageToServer = {text:user, type:'name',uniqueID:clientID}
+        document.querySelector("#hello").textContent = 'Hello ' + user
+        textfieldName.value =  user
+        webSocket.send(JSON.stringify(messageToServer))
+    } 
+}
+
+function sendMessageToServer(){
+    let ChatText = textfieldMessage.value;
+    let userName = textfieldName.value;
+    textfieldMessage.value = ''
+    let messageToServer = { text:ChatText, name:userName, type:'message'}
+    webSocket.send(JSON.stringify(messageToServer))
+}
+function sendSaveName(){
+    let user = textfieldName.value 
+    let clientID = localStorage.getItem('ClientID')
+    let messageToServer = { text:user, type:'name', uniqueID:clientID}
+    window.localStorage.setItem('name',user) //REGISTER NAME TO STORAGE
+    window.localStorage.setItem('ClientID',clientUniqueIDGenerator())
+    webSocket.send(JSON.stringify(messageToServer))
+    document.querySelector("#hello").textContent = 'Hello ' + textfieldName.value   
+}
+function handleIfList
+function refreshList(){
+    
 }

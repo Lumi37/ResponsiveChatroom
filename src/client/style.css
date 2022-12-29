@@ -4,14 +4,17 @@ body {
 }
 
 #container {
-    width: max-content;
+    width: min-content;
+    display: flex;
+    height: 500px;
+
     border: 1px yellow;
 }
 
 #userList {
     width: 500px;
     height: 500px;
-    border: 1px #fa1212;
+    border: solid 1px #fa1212;
 }
 
 #chat {
@@ -19,7 +22,8 @@ body {
     height: 500px;
     word-wrap: break-word;
     overflow-y: scroll;
-    border: 1px solid rgb(62, 225, 253);
+
+    border: 1px solid aqua;
 }
 
 p {

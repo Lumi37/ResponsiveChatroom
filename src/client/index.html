@@ -12,12 +12,16 @@
 
 <body>
     <div id="hello">Hello!</div>
-    name:<input type="text" id="nameTextField"><button id="saveName">Save</button>
+    name:<input type="text" id="nameTextField"><button id="saveName">Save</button><button id="refreshList"></button>
     <br>
 
 
     <div id="container">
-        <div id="userList"></div>
+        <div id="userList">
+            <ul id="list">
+                <li></li>
+            </ul>
+        </div>
         <div id="chat"></div>
     </div>
     message:<input type="text" id="messageField"> <button id="sendMessage">Send</button>
