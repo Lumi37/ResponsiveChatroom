@@ -1,6 +1,5 @@
 
 const webSocket = new WebSocket('ws://localhost:3001');
-const refreshList = document.querySelector('#refreshList')
 const textfieldName = document.querySelector('#nameTextField')
 const textfieldMessage = document.querySelector('#messageField')
 const chat = document.querySelector("#chat")
@@ -8,14 +7,14 @@ const sendButton = document.querySelector("#sendMessage")
 const saveNameBtn = document.querySelector("#saveName")
 let clientID = localStorage.getItem('ClientID')
 const list = document.querySelector('#list')
+const refreshBtn = document.querySelector('#refreshList')
 let listArr = []
 
     //SENDING INFO FROM LOCALSTORAGE
-webSocket.addEventListener("open",async ()=>{
+webSocket.addEventListener("open", ()=>{
     console.log("Client connected Succesfuly")
-    await sendInfoFromLocalStorage()
-    webSocket.send(JSON.stringify({type:'list'}))
-   // refreshList()
+    sendInfoFromLocalStorage()
+    refreshList()
 })
     //SAVING NAME, SENDING TO SERVER
 saveNameBtn.addEventListener('click',e=>{
@@ -25,6 +24,10 @@ saveNameBtn.addEventListener('click',e=>{
 sendButton.addEventListener("click", e=>{
     sendMessageToServer()
 })
+refreshBtn.addEventListener('click', e=>{
+    refreshList()
+})
+
 textfieldMessage.addEventListener('keypress',e=>{
     const key= e.key
     if(key == 'Enter'){
@@ -139,6 +142,8 @@ function handleIfList(data){
 
 
 }
-//  function refreshList(){
-    
-//  }
+function refreshList(){
+    list.innerHTML = ''
+    webSocket.send(JSON.stringify({type:'list'}))
+    list.innerHTML = ''
+}
