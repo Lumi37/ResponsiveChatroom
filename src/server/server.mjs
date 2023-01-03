@@ -14,13 +14,8 @@ let users = [];
 
 wsServer.on("connection", (ws)=>{
     
-   // let userName
     ws.id = null
-    ws.userName = 't'
-     //GET DATE   (.getDate for days, .getMonth()+1 for months, .getFullYear() for year)
-    // let currentdate = new Date(); 
-    // let datetime =currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-     //users.push(ws)
+    ws.userName = ''
     console.log("New client Connected!")
     ConnectedClients += 1 
    
@@ -33,6 +28,8 @@ wsServer.on("connection", (ws)=>{
         const connectionExists = findConnectionById(data.uniqueID)
         if (connectionExists) {
             ws = JSON.parse(JSON.stringify(connectionExists));
+            console.log('\n\n\n-----------------connectionExists-----------------')
+            console.log('CONNECTION USERNAME:',ws.userName,'\nID:',ws.id)
         } else {
             ws.id = data.uniqueID
             users.push(ws)
@@ -42,13 +39,17 @@ wsServer.on("connection", (ws)=>{
             ws.userName = handleIfName(data.text)
         }
         if(messageType==='message'){
-            sendMessageToClients(data.text,ws.userName)
+             sendMessageToClients(data.text,ws.userName,ws.id)
+        }
+        if(messageType === 'list'){
+            handleIfList()
         }
         
         console.log("Current List: ",users.length)
-    })
+    })  
+    console.log('\n\n\n-----------------USERLIST-----------------')
     users.forEach(user=>console.log('--->',user.userName))
-    console.log(`*68*Connected Clients : ${ConnectedClients}\nList: ${users.length}`)
+    console.log(`*51*Connected Clients : ${ConnectedClients}\nList: ${users.length}`)
     
         // WHEN CLOSING
     
@@ -65,7 +66,7 @@ server.listen(3000, ()=>console.log("listens to 3000") )
 
 
 function identifyMessageType(type){
-console.log("*73* HAPPENS")
+    console.log('\n\n\n-----------------identifyMessageType-----------------')
     switch(type){
         case 'name':
             console.log('identifyMessageType returns "name"')
@@ -73,6 +74,9 @@ console.log("*73* HAPPENS")
         case 'message':
             console.log('identifyMessageType returns "message"')
             return 'message';
+            case 'list':
+                console.log('identifyMessageType returns "list"')
+                return 'list';
         default:
             console.log(type)
             console.log('identifyMessageType returns "error"')
@@ -81,19 +85,41 @@ console.log("*73* HAPPENS")
 }
 
 function handleIfName(name){
+    console.log('\n\n\n-----------------handleIfName-----------------')
     console.log(`User ${name} Connected!`)
     return name;
 }
 
-function handleIfMessage(message, Name, currentdatetime){
-    let messageToClient = {date:currentdatetime, name:Name, text:message,type:'message'}
+function handleIfList(){
+    console.log('\n\n\n-----------------handleIfList-----------------')
+    users.forEach(user=>{
+        let list = {}
+        list.name = user.userName
+        list.id = user.id
+        list.type = 'list'
+        console.log('list item: ',list)
+        user.send(JSON.stringify(list))
+    })
+}
+
+
+function  handleIfMessage(message, Name, currentdatetime ,uID){
+    console.log('\t\n\n\n-----------------handleIfMessage-----------------')
+    let messageToClient = {date:currentdatetime, name:Name, text:message,type:'message', userID:uID}
     console.log('handleIfMessage returns ',messageToClient)
     return messageToClient
 }
 
 function findConnectionById(uID){
+    console.log('\n\n\n-----------------findConnectionById-----------------')
     let existence = null
     let debugExists = null
+    if(!uID){
+        existence = users[users.length-1]
+        debugExists = 'received null id'
+        console.log("findConnectionById returns ",debugExists)
+        return existence
+    }
     users.forEach(user=>{
         if (user.id == uID){
             existence = user
@@ -104,8 +130,13 @@ function findConnectionById(uID){
     return existence;
 } 
 
-function sendMessageToClients(text, userName) {
+async function  sendMessageToClients(text, userName,uID) {
+    console.log('\n\n\n-----------------sendMessageToClients-----------------')
     let currentdate = new Date();
     const datetime =currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds()
-    users.forEach(user => user.send(JSON.stringify(handleIfMessage(text,  userName, datetime))))
+    let pass =  JSON.stringify( handleIfMessage(text,  userName, datetime,uID))
+    users.forEach(user=>{
+        console.log(user.userName,'---',user.id)
+        user.send(pass)})
+
 }
