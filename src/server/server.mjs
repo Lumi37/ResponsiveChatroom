@@ -8,6 +8,7 @@ server.use(express.static('../client/'))
 server.use(express.json());
 let ConnectedClients = 0
 let users = [];
+let list = [];
 
 
 
@@ -16,6 +17,7 @@ wsServer.on("connection", (ws)=>{
     
     ws.id = null
     ws.userName = ''
+    users.push(ws)
     console.log("New client Connected!")
     ConnectedClients += 1 
    
@@ -25,24 +27,18 @@ wsServer.on("connection", (ws)=>{
         let data = JSON.parse(clientMessage)
         console.log("Received: ",data)
         const messageType = identifyMessageType(data.type)
-        const connectionExists = findConnectionById(data.uniqueID)
-        if (connectionExists) {
-            ws = JSON.parse(JSON.stringify(connectionExists));
-            console.log('\n\n\n-----------------connectionExists-----------------')
-            console.log('CONNECTION USERNAME:',ws.userName,'\nID:',ws.id)
-        } else {
-            ws.id = data.uniqueID
-            users.push(ws)
-        }
-        
+
         if(messageType==='name'){
             ws.userName = handleIfName(data.text)
         }
         if(messageType==='message'){
-             sendMessageToClients(data.text,ws.userName,ws.id)
+             sendMessageToClients(data.text,ws.userName)
         }
         if(messageType === 'list'){
             handleIfList()
+        }
+        if(messageType === 'closing'){
+            updateList(data.name)
         }
         
         console.log("Current List: ",users.length)
@@ -74,9 +70,12 @@ function identifyMessageType(type){
         case 'message':
             console.log('identifyMessageType returns "message"')
             return 'message';
-            case 'list':
-                console.log('identifyMessageType returns "list"')
-                return 'list';
+        case 'list':
+            console.log('identifyMessageType returns "list"')
+            return 'list';
+        case 'closing':
+            console.log('identifyMessage returns "closing"')
+            return 'closing'
         default:
             console.log(type)
             console.log('identifyMessageType returns "error"')
@@ -92,51 +91,38 @@ function handleIfName(name){
 
 function handleIfList(){
     console.log('\n\n\n-----------------handleIfList-----------------')
-    users.forEach(user=>{
-        let list = {}
-        list.name = user.userName
-        list.id = user.id
-        list.type = 'list'
+    users.forEach((user,i)=>{
+        list.push([user.userName,1])
+        console.log('listed name: ',user.userName)
         console.log('list item: ',list)
-        user.send(JSON.stringify(list))
     })
+    users.forEach(user=>{
+        user.send(JSON.stringify({list,type:'list'}))
+    })
+    
 }
 
+function updateList(name){
+    console.log('index found :',list.findIndex(username=>{return  username == name}))
 
-function  handleIfMessage(message, Name, currentdatetime ,uID){
+}
+function  handleIfMessage(message, Name, currentdatetime){
     console.log('\t\n\n\n-----------------handleIfMessage-----------------')
-    let messageToClient = {date:currentdatetime, name:Name, text:message,type:'message', userID:uID}
+    let messageToClient = {date:currentdatetime, name:Name, text:message,type:'message'}
     console.log('handleIfMessage returns ',messageToClient)
     return messageToClient
 }
 
-function findConnectionById(uID){
-    console.log('\n\n\n-----------------findConnectionById-----------------')
-    let existence = null
-    let debugExists = null
-    if(!uID){
-        existence = users[users.length-1]
-        debugExists = 'received null id'
-        console.log("findConnectionById returns ",debugExists)
-        return existence
-    }
-    users.forEach(user=>{
-        if (user.id == uID){
-            existence = user
-            debugExists = 'Connection Exists'
-        }
-    })
-    console.log("findConnectionById returns ",debugExists)
-    return existence;
-} 
 
-async function  sendMessageToClients(text, userName,uID) {
+
+async function  sendMessageToClients(text, userName) {
     console.log('\n\n\n-----------------sendMessageToClients-----------------')
     let currentdate = new Date();
     const datetime =currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds()
-    let pass =  JSON.stringify( handleIfMessage(text,  userName, datetime,uID))
+    let pass =  JSON.stringify( handleIfMessage(text,  userName, datetime))
+    console.log('final message: ',pass)
     users.forEach(user=>{
-        console.log(user.userName,'---',user.id)
+        console.log(user.userName)
         user.send(pass)})
 
 }
