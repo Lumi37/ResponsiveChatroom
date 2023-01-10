@@ -7,6 +7,7 @@ const sendButton = document.querySelector("#sendMessage")
 const saveNameBtn = document.querySelector("#saveName")
 const list = document.querySelector('#list')
 const refreshBtn = document.querySelector('#refreshList')
+const editname = document.querySelector('#editname')
 let listArr = []
 
     //SENDING INFO FROM LOCALSTORAGE
@@ -14,17 +15,18 @@ webSocket.addEventListener("open", ()=>{
     console.log("Client connected Succesfuly")
     // refreshList()
 })
+    
     //SAVING NAME, SENDING TO SERVER
-saveNameBtn.addEventListener('click',e=>{
-    sendSaveName()
-})
+saveNameBtn.addEventListener('click',e=>{ sendSaveName() })
+    
+    //EDIT NAME
+editname.addEventListener('click',e=>{ nameEdit() })
+
     //SENDING MESSAGE TO SERVER
-sendButton.addEventListener("click", e=>{
-    sendMessageToServer()
-})
-refreshBtn.addEventListener('click', e=>{
-    refreshList()
-})
+sendButton.addEventListener("click", e=>{ sendMessageToServer() })
+
+    //REFRESH LIST REQ
+refreshBtn.addEventListener('click', e=>{ refreshList() })
 
 textfieldMessage.addEventListener('keypress',e=>{
     const key= e.key
@@ -32,6 +34,7 @@ textfieldMessage.addEventListener('keypress',e=>{
         sendMessageToServer()
     }       
 })
+
     //RECEIVING MESSAGE FROM SERVER
 webSocket.addEventListener("message", (e)=>{
     console.log("received message",e.data)
@@ -46,9 +49,10 @@ webSocket.addEventListener("message", (e)=>{
 })
 
 webSocket.addEventListener('close',(e)=>{
-    userClosed()
+  //  userClosed()
 })
 
+    //CLEAR CHAT
 document.querySelector('#clear').addEventListener("click",(e)=>{
     chat.innerHTML = ''
 })
@@ -89,10 +93,13 @@ function sendMessageToServer(){
 
 
 function sendSaveName(){
-    let user = textfieldName.value 
-    let messageToServer = { text:user, type:'name'}
-    webSocket.send(JSON.stringify(messageToServer))
-    document.querySelector("#hello").textContent = 'Hello ' + textfieldName.value   
+    if(!textfieldName.value==''){
+        saveNameBtn.disabled = true
+        let user = textfieldName.value 
+        let messageToServer = { text:user, type:'name'}
+        webSocket.send(JSON.stringify(messageToServer))
+        document.querySelector("#hello").textContent = 'Hello ' + textfieldName.value   
+    }
 }
 
 
@@ -114,7 +121,7 @@ function handleIfList(listItem){
     console.log(userList)
     userList.forEach(elem => {
         let li = document.createElement('li')
-        li.appendChild(document.createTextNode(elem))
+        li.appendChild(document.createTextNode(elem.name))
         list.appendChild(li)
     })
     console.log('current arr', listArr);

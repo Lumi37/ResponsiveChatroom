@@ -17,6 +17,7 @@ wsServer.on("connection", (ws)=>{
     
     ws.id = null
     ws.userName = ''
+    ws.status = 'online'
     users.push(ws)
     console.log("New client Connected!")
     ConnectedClients += 1 
@@ -29,10 +30,10 @@ wsServer.on("connection", (ws)=>{
         const messageType = identifyMessageType(data.type)
 
         if(messageType==='name'){
-            ws.userName = handleIfName(data.text)
+            handleIfName(data.text,ws)
         }
         if(messageType==='message'){
-             sendMessageToClients(data.text,ws.userName)
+            clientChat(data.text,ws.userName)
         }
         if(messageType === 'list'){
             handleIfList()
@@ -51,8 +52,11 @@ wsServer.on("connection", (ws)=>{
     
     ws.on('close', ()=>{                                        
         ConnectedClients -= 1
+        try{ list[list.findIndex(Status=> Status.name === ws.userName)].status = 'offline' }
+        catch(error){console.log('unregistered client')}
+        ws.status = 'offline'
         if(ws.userName != undefined)
-            console.log(`${ws.userName} Disconnected!`)
+            console.log(`${ws.userName} Disconnected! (status:${ws.status})`)
         else
             console.log('A client Disconnected!')
         console.log(`*78*Connected Clients : ${ConnectedClients}\nList: ${users.length}`)
@@ -83,16 +87,17 @@ function identifyMessageType(type){
     }
 }
 
-function handleIfName(name){
+function handleIfName(username,connection){
     console.log('\n\n\n-----------------handleIfName-----------------')
-    console.log(`User ${name} Connected!`)
-    return name;
+    connection.userName = username
+    let userStatus = {name:username, status:'online'}
+    list.push(userStatus)
+    console.log(`User ${connection.userName} Connected!`)
 }
 
 function handleIfList(){
     console.log('\n\n\n-----------------handleIfList-----------------')
     users.forEach((user,i)=>{
-        list.push([user.userName,1])
         console.log('listed name: ',user.userName)
         console.log('list item: ',list)
     })
@@ -103,9 +108,11 @@ function handleIfList(){
 }
 
 function updateList(name){
-    console.log('index found :',list.findIndex(username=>{return  username == name}))
+    console.log('updating list ...........')
+    //console.log('index found :',list.findIndex(username=>{return  username == name}))
 
 }
+
 function  handleIfMessage(message, Name, currentdatetime){
     console.log('\t\n\n\n-----------------handleIfMessage-----------------')
     let messageToClient = {date:currentdatetime, name:Name, text:message,type:'message'}
@@ -115,7 +122,7 @@ function  handleIfMessage(message, Name, currentdatetime){
 
 
 
-async function  sendMessageToClients(text, userName) {
+async function  clientChat(text, userName) {
     console.log('\n\n\n-----------------sendMessageToClients-----------------')
     let currentdate = new Date();
     const datetime =currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds()
