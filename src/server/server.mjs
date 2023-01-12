@@ -1,10 +1,11 @@
 import express from 'express'
 import fs from 'fs/promises'
 import { WebSocketServer } from 'ws'
+//import _, { uniqueId } from 'lodash'
 
 const server = express()
 const wsServer = new WebSocketServer({port:3001})
-server.use(express.static('../client/'))
+server.use(express.static('/home/kostas/projects/test6/ResponsiveChatroom/src/client/'))
 server.use(express.json());
 let ConnectedClients = 0
 let users = [];
@@ -18,7 +19,8 @@ wsServer.on("connection", (ws)=>{
     ws.id = null
     ws.userName = ''
     ws.status = 'online'
-    users.push(ws)
+    
+    users.push(ws) 
     console.log("New client Connected!")
     ConnectedClients += 1 
    
@@ -28,41 +30,47 @@ wsServer.on("connection", (ws)=>{
         let data = JSON.parse(clientMessage)
         console.log("Received: ",data)
         const messageType = identifyMessageType(data.type)
-
         if(messageType==='name'){
-            handleIfName(data.text,ws)
+            if(identifyUserById(data.id)){ setUserInfo(data.id,data.text,ws) }     // ws = JSON.parse(JSON.stringify(identifyUserById(data.id,ws)))//_.cloneDeep(identifyUserById(data.id,ws)) //"DEEPCLONE" EXISTING USER '
+            else{ setNewUserInfo(data.id,data.text,ws) }
         }
-        if(messageType==='message'){
-            clientChat(data.text,ws.userName)
-        }
-        if(messageType === 'list'){
-            handleIfList()
-        }
-        if(messageType === 'closing'){
-            updateList(data.name)
-        }
+        if(messageType==='message'){ handleIfMessage(data.text,data.name,data.id) }
+        if(messageType === 'list'){ handleIfList() }
+       // if(messageType === 'closing'){ updateList(data.name) }
         
         console.log("Current List: ",users.length)
     })  
     console.log('\n\n\n-----------------USERLIST-----------------')
-    users.forEach(user=>console.log('--->',user.userName))
-    console.log(`*51*Connected Clients : ${ConnectedClients}\nList: ${users.length}`)
+    list.forEach(user=>console.log('--->',user.name,' : ',user.id))
+    console.log(`Connected Clients : ${ConnectedClients}\nList: ${list.length}`)
     
         // WHEN CLOSING
     
     ws.on('close', ()=>{                                        
         ConnectedClients -= 1
-        try{ list[list.findIndex(Status=> Status.name === ws.userName)].status = 'offline' }
-        catch(error){console.log('unregistered client')}
+        try{ 
+            list[list.findIndex(user=> user.id === ws.id)].status = 'offline'
+        }
+        catch(error){
+            console.log('unregistered client')
+        }
         ws.status = 'offline'
         if(ws.userName != undefined)
             console.log(`${ws.userName} Disconnected! (status:${ws.status})`)
         else
             console.log('A client Disconnected!')
         console.log(`*78*Connected Clients : ${ConnectedClients}\nList: ${users.length}`)
+        
+       // updateUserArray()
     })
 })
 server.listen(3000, ()=>console.log("listens to 3000") )
+
+
+
+
+
+        //FUNCTIONS
 
 
 function identifyMessageType(type){
@@ -77,9 +85,9 @@ function identifyMessageType(type){
         case 'list':
             console.log('identifyMessageType returns "list"')
             return 'list';
-        case 'closing':
-            console.log('identifyMessage returns "closing"')
-            return 'closing'
+        // case 'closing':
+        //     console.log('identifyMessage returns "closing"')
+        //     return 'closing'
         default:
             console.log(type)
             console.log('identifyMessageType returns "error"')
@@ -87,19 +95,18 @@ function identifyMessageType(type){
     }
 }
 
-function handleIfName(username,connection){
-    console.log('\n\n\n-----------------handleIfName-----------------')
-    connection.userName = username
-    let userStatus = {name:username, status:'online'}
-    list.push(userStatus)
+function setNewUserInfo(uID,username,connection){
+    console.log('\n\n\n-----------------setNewUserInfo-----------------')
+    connection.userName = username 
+    connection.id = uID
+    list.push( {name:username, id:uID, status:'online'} )
     console.log(`User ${connection.userName} Connected!`)
 }
 
 function handleIfList(){
     console.log('\n\n\n-----------------handleIfList-----------------')
-    users.forEach((user,i)=>{
-        console.log('listed name: ',user.userName)
-        console.log('list item: ',list)
+    list.forEach((user,i)=>{
+      console.log(`List:\n${user.name} : ${user.id} : ${user.status}`)
     })
     users.forEach(user=>{
         user.send(JSON.stringify({list,type:'list'}))
@@ -107,29 +114,65 @@ function handleIfList(){
     
 }
 
-function updateList(name){
-    console.log('updating list ...........')
-    //console.log('index found :',list.findIndex(username=>{return  username == name}))
+// function updateList(name){
+//     console.log('updating list ...........')
+//     //console.log('index found :',list.findIndex(username=>{return  username == name}))
 
-}
+// }
 
-function  handleIfMessage(message, Name, currentdatetime){
+function  handleIfMessage(message, Name, userID){
     console.log('\t\n\n\n-----------------handleIfMessage-----------------')
-    let messageToClient = {date:currentdatetime, name:Name, text:message,type:'message'}
-    console.log('handleIfMessage returns ',messageToClient)
-    return messageToClient
+    const currentdate = dateNow()
+    let messageToClient = JSON.stringify({date:currentdate, name:Name, text:message, type:'message', id:userID})
+    console.log('Final Message: ',messageToClient)
+    users.forEach(user =>{
+        user.send(messageToClient)
+    })
+
 }
-
-
-
-async function  clientChat(text, userName) {
-    console.log('\n\n\n-----------------sendMessageToClients-----------------')
+    // CURRENT DATE
+function dateNow(){
     let currentdate = new Date();
     const datetime =currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds()
-    let pass =  JSON.stringify( handleIfMessage(text,  userName, datetime))
-    console.log('final message: ',pass)
-    users.forEach(user=>{
-        console.log(user.userName)
-        user.send(pass)})
-
+    return datetime
 }
+
+function identifyUserById(id){
+    let outcome = false
+    console.log('\n\n\n-----------------identifyUserById-----------------\nlist.length: ',list.length)
+    list.forEach(user => {
+        if (id === user.id){
+            console.log('user identified as ',user.name,'with ID:',user.id)
+            console.log('RETURNS TRUE')
+            outcome = true
+        }
+    })
+    if(outcome){ return outcome }
+    else{ console.log('RETURNS FALSE'); return outcome }
+}
+
+function setUserInfo(id,name,connection){
+    console.log('\n\n\n-----------------setUserInfo-----------------')
+    list.forEach(user => {
+        if (id === user.id){
+            connection.userName = name
+            connection.id = id
+            user.status = 'online'
+            console.log('user identified as ',connection.userName,'with ID:',connection.id)
+        }
+    });
+}
+
+
+
+// function updateUserArray(id,connection){
+//     console.log('\n\n\n-----------------updateUserArray-----------------')
+//     users.forEach(user => {
+//         if (id === user.id){
+//             console.log('user identified as ',user.userName,'with ID:',user.id)
+//             user = _.cloneDeep(connection)
+//             console.log('user Updated...')
+//         }
+//     })
+// }
+

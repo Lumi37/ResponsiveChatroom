@@ -3,6 +3,18 @@ body {
     color: aqua;
 }
 
+ul {
+    list-style-type: none;
+}
+
+#statusicon {
+    width: 10px;
+    height: 10px;
+    opacity: 100%;
+    border-radius: 15px;
+}
+
+
 #container {
     width: min-content;
     display: flex;

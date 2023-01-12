@@ -4,29 +4,31 @@ const textfieldName = document.querySelector('#nameTextField')
 const textfieldMessage = document.querySelector('#messageField')
 const chat = document.querySelector("#chat")
 const sendButton = document.querySelector("#sendMessage")
-const saveNameBtn = document.querySelector("#saveName")
+const saveNameButton = document.querySelector("#saveName")
 const list = document.querySelector('#list')
 const refreshBtn = document.querySelector('#refreshList')
 const editname = document.querySelector('#editname')
-let listArr = []
+const storageID = localStorage.getItem('ClientID')
+// const storageName = localStorage.getItem('name')
 
     //SENDING INFO FROM LOCALSTORAGE
 webSocket.addEventListener("open", ()=>{
     console.log("Client connected Succesfuly")
-    // refreshList()
+    sendInfoFromLocalStorage()
+   // refreshList()
 })
     
     //SAVING NAME, SENDING TO SERVER
-saveNameBtn.addEventListener('click',e=>{ sendSaveName() })
+saveNameButton.addEventListener('click',e=>{console.log("Save name button pressed!"); sendSaveName() })
     
     //EDIT NAME
-editname.addEventListener('click',e=>{ nameEdit() })
+editname.addEventListener('click',e=>{ console.log("Edit name button pressed!"); nameEdit() })
 
     //SENDING MESSAGE TO SERVER
-sendButton.addEventListener("click", e=>{ sendMessageToServer() })
+sendButton.addEventListener("click", e=>{ console.log("Send Message button pressed!"); sendMessageToServer() })
 
     //REFRESH LIST REQ
-refreshBtn.addEventListener('click', e=>{ refreshList() })
+refreshBtn.addEventListener('click', e=>{console.log("Refresh List button pressed!"); refreshList() })
 
 textfieldMessage.addEventListener('keypress',e=>{
     const key= e.key
@@ -85,8 +87,9 @@ else
 function sendMessageToServer(){
     let ChatText = textfieldMessage.value;
     let userName = textfieldName.value;
+    let storeID = localStorage.getItem('ClientID')
     textfieldMessage.value = ''
-    let messageToServer = { text:ChatText, name:userName, type:'message'}
+    let messageToServer = { text:ChatText, name:userName, type:'message', id:storeID }
     if(ChatText!='')
         webSocket.send(JSON.stringify(messageToServer))
 }
@@ -94,9 +97,12 @@ function sendMessageToServer(){
 
 function sendSaveName(){
     if(!textfieldName.value==''){
-        saveNameBtn.disabled = true
-        let user = textfieldName.value 
-        let messageToServer = { text:user, type:'name'}
+        saveNameButton.disabled = true
+        window.localStorage.setItem('name',textfieldName.value)
+        window.localStorage.setItem('ClientID',clientUniqueIDGenerator())
+        let storeID = localStorage.getItem('ClientID')
+        let name = textfieldName.value
+        let messageToServer = { text:name , type:'name', id:storeID }
         webSocket.send(JSON.stringify(messageToServer))
         document.querySelector("#hello").textContent = 'Hello ' + textfieldName.value   
     }
@@ -104,29 +110,16 @@ function sendSaveName(){
 
 
 function handleIfList(listItem){
-    //listArr.push(listItem)
-    // if ( listArr.includes(listItem.name)){
-    //     console.log('if happens thus ',listArr.includes(listItem.name))
-    //     listArr.pop()
-    //     console.log('therefore pop')
-    // }
-    // else{
-    //     console.log('else happens thus ',listArr.includes(listItem.name))
-    //     listArr.push(listItem)
-    //     console.log('therefore push')
-    // }
-    
+
     list.innerHTML = ''
     let userList = listItem.list
     console.log(userList)
     userList.forEach(elem => {
-        let li = document.createElement('li')
-        li.appendChild(document.createTextNode(elem.name))
-        list.appendChild(li)
+        if(elem.status === 'online')
+            list.innerHTML  += `<li>${elem.name}  <img id="statusicon" src="images/greenicon.png" alt="online"></li>`
+        if(elem.status === 'offline')
+            list.innerHTML  += `<li>${elem.name}  <img id="statusicon" src="images/greyicon.png" alt="offline"></li>`
     })
-    console.log('current arr', listArr);
-
-    //  list.innerHTML += `<li>${data.name}<li>`
 }
 
 
@@ -140,4 +133,31 @@ function userClosed(){
 function refreshList(){
     list.innerHTML = ''
     webSocket.send(JSON.stringify({type:'list'}))
+}
+
+
+    //GENERATES RANDOM ID
+function clientUniqueIDGenerator(){
+    let datenow = new Date()
+    function idGen(){
+        
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return idGen() + idGen() + '-' + idGen() + String(datenow.getMilliseconds())
+}
+
+function sendInfoFromLocalStorage(){
+    if(!(localStorage.getItem('ClientID')))
+       window.localStorage.setItem('ClientID',clientUniqueIDGenerator()) //REGISTER ID TO STORAGE
+    else{
+        saveNameButton.disabled = true 
+        sendButton.disabled = false
+        textfieldMessage.disabled = false
+        const user = localStorage.getItem('name')
+        let clientID = localStorage.getItem('ClientID');
+        let messageToServer = {text:user, type:'name',id:clientID}
+        document.querySelector("#hello").textContent = 'Hello ' + user
+        textfieldName.value =  user
+        webSocket.send(JSON.stringify(messageToServer))
+    } 
 }
