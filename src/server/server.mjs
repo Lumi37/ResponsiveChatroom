@@ -1,4 +1,5 @@
 import express from 'express'
+import fileUpload from 'express-fileupload'
 import fs from 'fs/promises'
 import { WebSocketServer } from 'ws'
 // import _ from 'lodash'
@@ -7,12 +8,30 @@ const server = express()
 const wsServer = new WebSocketServer({port:3001})
 server.use(express.static('/home/kostas/projects/test6/ResponsiveChatroom/src/client/'))
 server.use(express.json());
+server.use(fileUpload());
 let ConnectedClients = 0
 let users = [];
 let list = [];
 let history = []
 
+server.post('/', function(req, res) {
+    let sampleFile;
+    let uploadPath;
+  
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send('No files were uploaded.');
+    }
 
+    sampleFile = req.files.sampleFile;
+    uploadPath ='/home/kostas/projects/test6/ResponsiveChatroom/images/profilepictures/' + sampleFile.name;
+
+    sampleFile.mv(uploadPath, function(err) {
+      if (err)
+        return res.status(500).send(err);
+  
+      console.log('Received a file!')
+    });
+  });
 
 
 wsServer.on("connection", (ws)=>{
