@@ -27,6 +27,7 @@ ul {
     width: 500px;
     height: 500px;
     border: solid 1px #fa1212;
+    overflow-y: scroll;
 }
 
 #chat {
@@ -34,7 +35,6 @@ ul {
     height: 500px;
     word-wrap: break-word;
     overflow-y: scroll;
-
     border: 1px solid aqua;
 }
 

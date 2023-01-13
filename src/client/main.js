@@ -7,8 +7,9 @@ const sendButton = document.querySelector("#sendMessage")
 const saveNameButton = document.querySelector("#saveName")
 const list = document.querySelector('#list')
 const refreshBtn = document.querySelector('#refreshList')
-const editname = document.querySelector('#editname')
+const editNameButton = document.querySelector('#editname')
 const storageID = localStorage.getItem('ClientID')
+let noEdit = true
 // const storageName = localStorage.getItem('name')
 
     //SENDING INFO FROM LOCALSTORAGE
@@ -22,13 +23,10 @@ webSocket.addEventListener("open", ()=>{
 saveNameButton.addEventListener('click',e=>{console.log("Save name button pressed!"); sendSaveName() })
     
     //EDIT NAME
-editname.addEventListener('click',e=>{ console.log("Edit name button pressed!"); nameEdit() })
+editNameButton.addEventListener('click',e=>{ console.log("Edit name button pressed!"); nameEdit() })
 
     //SENDING MESSAGE TO SERVER
 sendButton.addEventListener("click", e=>{ console.log("Send Message button pressed!"); sendMessageToServer() })
-
-    //REFRESH LIST REQ
-refreshBtn.addEventListener('click', e=>{console.log("Refresh List button pressed!"); refreshList() })
 
 textfieldMessage.addEventListener('keypress',e=>{
     const key= e.key
@@ -36,6 +34,11 @@ textfieldMessage.addEventListener('keypress',e=>{
         sendMessageToServer()
     }       
 })
+
+
+    //REFRESH LIST REQ
+refreshBtn.addEventListener('click', e=>{console.log("Refresh List button pressed!"); refreshList() })
+
 
     //RECEIVING MESSAGE FROM SERVER
 webSocket.addEventListener("message", (e)=>{
@@ -47,11 +50,9 @@ webSocket.addEventListener("message", (e)=>{
         handleIfMessage(data) 
     if(typeofMessage == 'list')
         handleIfList(data)
+    if(typeofMessage == 'history')
+        handleIfHistory(data)
 
-})
-
-webSocket.addEventListener('close',(e)=>{
-  //  userClosed()
 })
 
     //CLEAR CHAT
@@ -68,17 +69,25 @@ function MessageType(type){
             return 'message'
         case 'list':
             return 'list'
+        case 'history':
+            return 'history'
         default:
             console.log('unknown error')
     }
 }
 
 
-function handleIfMessage(message){
-if (message.name == textfieldName.value )
-    chat.innerHTML += `<p class="user">${message.date} ${message.name}: ${message.text}</p><br>`
-else
-    chat.innerHTML += `<p class="otheruser">${message.date} ${message.name}: ${message.text}</p><br>`
+function handleIfMessage(messageInfo){
+if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
+    let message = (`<p class="user">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`)
+    chat.innerHTML += message
+
+} 
+else{
+    let message =   `<p class="otheruser">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`
+    chat.innerHTML += message
+}
+    
 }
 
 
@@ -98,14 +107,23 @@ function sendMessageToServer(){
 function sendSaveName(){
     if(!textfieldName.value==''){
         saveNameButton.disabled = true
+        editname.disabled = false
         window.localStorage.setItem('name',textfieldName.value)
-        window.localStorage.setItem('ClientID',clientUniqueIDGenerator())
+        if(noEdit)
+            window.localStorage.setItem('ClientID',clientUniqueIDGenerator())
         let storeID = localStorage.getItem('ClientID')
         let name = textfieldName.value
         let messageToServer = { text:name , type:'name', id:storeID }
         webSocket.send(JSON.stringify(messageToServer))
         document.querySelector("#hello").textContent = 'Hello ' + textfieldName.value   
     }
+}
+
+function nameEdit(){
+    saveNameButton.disabled = false 
+    editname.disabled = false
+    noEdit == false
+
 }
 
 
@@ -123,12 +141,19 @@ function handleIfList(listItem){
 }
 
 
-function userClosed(){
-    let userName = textfieldName.value;
-    let messageToServer = { name:userName , type:'closing'}
-    webSocket.send(JSON.stringify(messageToServer))
+function handleIfHistory(messageInfo){
+    if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
+        let message = (`<p class="user">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`)
+        chat.innerHTML += message
+    
+    } 
+    else{
+        let message =   `<p class="otheruser">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`
+        chat.innerHTML += message
+    }
 
 }
+
 
 function refreshList(){
     list.innerHTML = ''
@@ -146,11 +171,14 @@ function clientUniqueIDGenerator(){
     return idGen() + idGen() + '-' + idGen() + String(datenow.getMilliseconds())
 }
 
+
+    //SENDING USER INFO FROM LOCALSTORAGE
 function sendInfoFromLocalStorage(){
     if(!(localStorage.getItem('ClientID')))
        window.localStorage.setItem('ClientID',clientUniqueIDGenerator()) //REGISTER ID TO STORAGE
     else{
         saveNameButton.disabled = true 
+        editNameButton.disabled = false
         sendButton.disabled = false
         textfieldMessage.disabled = false
         const user = localStorage.getItem('name')
@@ -159,5 +187,7 @@ function sendInfoFromLocalStorage(){
         document.querySelector("#hello").textContent = 'Hello ' + user
         textfieldName.value =  user
         webSocket.send(JSON.stringify(messageToServer))
+        webSocket.send(JSON.stringify({type:'history'}))
     } 
 }
+
