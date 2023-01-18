@@ -148,9 +148,9 @@ function handleIfList(listItem) {
     userList.forEach(elem => {  
         console.log(elem.icon)
         if (elem.status === 'online')
-            list.innerHTML += `<li><img id="usericon" src="${elem.icon}" alt=""><img id="statusicon" src="images/greenicon.png" alt="online"> <p class="listname">${elem.name}</p>  </li>`
+            list.innerHTML += `<li>${elem.name}<img id="usericon" src="${elem.icon}" alt=""><img id="statusicon" src="images/greenicon.png" alt="online"> </li>` //<div class="listname">${elem.name}</div>
         if (elem.status === 'offline')
-            list.innerHTML += `<li><img id="usericon" src="${elem.icon}" alt=""><img id="statusicon" src="images/greyicon.png" alt="offline"> <p class="listname">${elem.name}</p>  </li>`
+            list.innerHTML += `<li>${elem.name}<img id="usericon" src="${elem.icon}" alt=""><img id="statusicon" src="images/greyicon.png" alt="offline"> </li>` //<div class="listname">${elem.name}</div>
     })
 }
 
