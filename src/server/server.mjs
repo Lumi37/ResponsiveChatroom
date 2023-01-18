@@ -196,8 +196,8 @@ function handleFile(req, res) {
     sampleFile = req.files.sampleFile;
     fileExtention = sampleFile.name.slice(sampleFile.name.indexOf('.'),sampleFile.name.length)
     sampleFile.name = id + fileExtention
-    uploadPath = '/home/kostas/projects/ResponsiveChatroom/images/profilepictures/' + sampleFile.name;
-    list[list.findIndex(user => user.id ==  id)].icon = uploadPath  //Register icon to user (found by id)
+    uploadPath = '/home/kostas/projects/ResponsiveChatroom/src/client/images/' + sampleFile.name;
+    list[list.findIndex(user => user.id ==  id)].icon = `images/${sampleFile.name}`  //Register icon to user (found by id)
     console.log('file size: ', req.files.sampleFile.size)
     sampleFile.mv(uploadPath, function (err) {
         if (err)

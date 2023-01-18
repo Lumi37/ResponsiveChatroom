@@ -13,21 +13,25 @@ const hiddenIDfield= document.querySelector('#userID')
 let noEdit = true
 // const storageName = localStorage.getItem('name')
 
+
+
+
+
 //SENDING INFO FROM LOCALSTORAGE
 webSocket.addEventListener("open", () => {
     console.log("Client connected Succesfuly")
     sendInfoFromLocalStorage()
-    // refreshList()
+    refreshList()
 })
 
 //SAVING NAME, SENDING TO SERVER
-saveNameButton.addEventListener('click', e => { console.log("Save name button pressed!"); sendSaveName() })
+saveNameButton.addEventListener('click', e => { sendSaveName() })
 
 //EDIT NAME
-editNameButton.addEventListener('click', e => { console.log("Edit name button pressed!"); nameEdit() })
+editNameButton.addEventListener('click', e => { nameEdit() })
 
 //SENDING MESSAGE TO SERVER
-sendButton.addEventListener("click", e => { console.log("Send Message button pressed!"); sendMessageToServer() })
+sendButton.addEventListener("click", e => { sendMessageToServer() })
 
 textfieldMessage.addEventListener('keypress', e => {
     const key = e.key
@@ -38,28 +42,24 @@ textfieldMessage.addEventListener('keypress', e => {
 
 
 //REFRESH LIST REQ
-refreshBtn.addEventListener('click', e => { console.log("Refresh List button pressed!"); refreshList() })
+refreshBtn.addEventListener('click', e => { refreshList() })
 
 
 //RECEIVING MESSAGE FROM SERVER
 webSocket.addEventListener("message", (e) => {
-    console.log("received message", e.data)
     let data = JSON.parse(e.data)
-    let typeofMessage = MessageType(data.type)
-    console.log('typeofMessage = ', data.type)
-    if (typeofMessage == 'message')
-        handleIfMessage(data)
-    if (typeofMessage == 'list')
-        handleIfList(data)
-    if (typeofMessage == 'history')
-        handleIfHistory(data)
-
+    choiceBy(MessageType(data.type,data))
 })
 
 //CLEAR CHAT
 document.querySelector('#clear').addEventListener("click", (e) => {
     chat.innerHTML = ''
 })
+
+
+
+
+
 
 
 //FUNCTIONS 
@@ -77,6 +77,14 @@ function MessageType(type) {
     }
 }
 
+function choiceBy(type,data){
+    if (type == 'message')
+        handleIfMessage(data)
+    if (type == 'list')
+        handleIfList(data)
+    if (type == 'history')
+        handleIfHistory(data)
+}
 
 function handleIfMessage(messageInfo) {
     if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')) {
@@ -136,23 +144,24 @@ function handleIfList(listItem) {
     list.innerHTML = ''
     let userList = listItem.list
     console.log(userList)
-    userList.forEach(elem => {
+    userList.forEach(elem => {  
+        console.log(elem.icon)
         if (elem.status === 'online')
-            list.innerHTML += `<li>${elem.name}  <img id="statusicon" src="images/greenicon.png" alt="online"></li>`
+            list.innerHTML += `<li><img id="usericon" src="${elem.icon}" alt=""><img id="statusicon" src="images/greenicon.png" alt="online"> <p class="listname">${elem.name}</p>  </li>`
         if (elem.status === 'offline')
-            list.innerHTML += `<li>${elem.name}  <img id="statusicon" src="images/greyicon.png" alt="offline"></li>`
+            list.innerHTML += `<li><img id="usericon" src="${elem.icon}" alt=""><img id="statusicon" src="images/greyicon.png" alt="offline"> <p class="listname">${elem.name}</p>  </li>`
     })
 }
 
 
 function handleIfHistory(messageInfo) {
     if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')) {
-        let message = (`<p class="user">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`)
+        let message = (`<p id="texts" class="user">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`)
         chat.innerHTML += message
 
     }
     else {
-        let message = `<p class="otheruser">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`
+        let message = `<p id="texts" class="otheruser">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`
         chat.innerHTML += message
     }
 }
