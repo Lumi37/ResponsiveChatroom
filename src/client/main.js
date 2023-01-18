@@ -48,6 +48,7 @@ refreshBtn.addEventListener('click', e => { refreshList() })
 //RECEIVING MESSAGE FROM SERVER
 webSocket.addEventListener("message", (e) => {
     let data = JSON.parse(e.data)
+    console.log('type: ', MessageType(data.type), 'data: ',data)
     choiceBy(MessageType(data.type),data)
 })
 
