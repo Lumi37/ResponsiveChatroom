@@ -48,7 +48,7 @@ refreshBtn.addEventListener('click', e => { refreshList() })
 //RECEIVING MESSAGE FROM SERVER
 webSocket.addEventListener("message", (e) => {
     let data = JSON.parse(e.data)
-    choiceBy(MessageType(data.type,data))
+    choiceBy(MessageType(data.type),data)
 })
 
 //CLEAR CHAT

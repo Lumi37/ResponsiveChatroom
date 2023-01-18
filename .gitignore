@@ -1,5 +1,4 @@
 node_modules
-images/profilepictures/*
-!images/profilepictures/default.png
-
+src/client/images
+!src/client/images/default.png
 

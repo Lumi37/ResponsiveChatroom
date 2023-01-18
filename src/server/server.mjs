@@ -115,7 +115,7 @@ function setNewUserInfo(uID, username, connection) {
     console.log('\n\n\n-----------------setNewUserInfo-----------------')
     connection.userName = username
     connection.id = uID
-    list.push({ name: username, id: uID, status: 'online', icon:'/home/kostas/projects/ResponsiveChatroom/images/profilepictures/default.png' })
+    list.push({ name: username, id: uID, status: 'online', icon:'images/default.png' })
     console.log(`User ${connection.userName} Connected!`)
 }
 
