@@ -9,6 +9,7 @@ const list = document.querySelector('#list')
 const refreshBtn = document.querySelector('#refreshList')
 const editNameButton = document.querySelector('#editname')
 const storageID = localStorage.getItem('ClientID')
+const hiddenIDfield= document.querySelector('#userID')
 let noEdit = true
 // const storageName = localStorage.getItem('name')
 
@@ -113,9 +114,10 @@ function sendSaveName() {
         window.localStorage.setItem('name', textfieldName.value)
         if (noEdit)
             window.localStorage.setItem('ClientID', clientUniqueIDGenerator())
-        let storeID = localStorage.getItem('ClientID')
+        let storageID = localStorage.getItem('ClientID')
+        hiddenIDfield.value = storageID
         let name = textfieldName.value
-        let messageToServer = { text: name, type: 'name', id: storeID }
+        let messageToServer = { text: name, type: 'name', id: storageID }
         webSocket.send(JSON.stringify(messageToServer))
         document.querySelector("#hello").textContent = 'Hello ' + textfieldName.value
     }
@@ -176,8 +178,12 @@ function clientUniqueIDGenerator() {
 
 //SENDING USER INFO FROM LOCALSTORAGE
 function sendInfoFromLocalStorage() {
-    if (!(localStorage.getItem('ClientID')))
+    if (!(localStorage.getItem('ClientID'))){
         window.localStorage.setItem('ClientID', clientUniqueIDGenerator()) //REGISTER ID TO STORAGE
+        hiddenIDfield.value = localStorage.getItem('ClientID')
+
+    }
+        
     else {
         saveNameButton.disabled = true
         editNameButton.disabled = false
@@ -185,6 +191,7 @@ function sendInfoFromLocalStorage() {
         textfieldMessage.disabled = false
         const user = localStorage.getItem('name')
         let clientID = localStorage.getItem('ClientID');
+        hiddenIDfield.value = clientID
         let messageToServer = { text: user, type: 'name', id: clientID }
         document.querySelector("#hello").textContent = 'Hello ' + user
         textfieldName.value = user
