@@ -155,7 +155,6 @@ function handleIfHistory(messageInfo) {
         let message = `<p class="otheruser">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`
         chat.innerHTML += message
     }
-
 }
 
 
