@@ -115,7 +115,7 @@ function setNewUserInfo(uID, username, connection) {
     console.log('\n\n\n-----------------setNewUserInfo-----------------')
     connection.userName = username
     connection.id = uID
-    list.push({ name: username, id: uID, status: 'online' })
+    list.push({ name: username, id: uID, status: 'online', icon:'/home/kostas/projects/ResponsiveChatroom/images/profilepictures/default.png' })
     console.log(`User ${connection.userName} Connected!`)
 }
 
@@ -191,37 +191,25 @@ function handleFile(req, res) {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
-    console.log(req)
     name = req.body.name
     id = req.body.id
     sampleFile = req.files.sampleFile;
     fileExtention = sampleFile.name.slice(sampleFile.name.indexOf('.'),sampleFile.name.length)
-    console.log(fileExtention)
-    sampleFile.name = id
-    uploadPath = '/home/kostas/projects/ResponsiveChatroom/images/profilepictures/' + sampleFile.name + fileExtention;
-
+    sampleFile.name = id + fileExtention
+    uploadPath = '/home/kostas/projects/ResponsiveChatroom/images/profilepictures/' + sampleFile.name;
+    list[list.findIndex(user => user.id ==  id)].icon = uploadPath  //Register icon to user (found by id)
     console.log('file size: ', req.files.sampleFile.size)
     sampleFile.mv(uploadPath, function (err) {
         if (err)
             return res.status(500).send(err);
 
-        console.log('Received a file from: ',name)
+        console.log(`Received a file: ${sampleFile.name}\nfrom:${name}`)
     });
 
 }
 
 
-function returnFileName(id, name, connection) {
-    console.log('\n\n\n-----------------setUserInfo-----------------')
-    list.forEach(user => {
-        if (id === user.id) {
-            connection.userName = name
-            connection.id = id
-            user.status = 'online'
-            console.log('user identified as ', connection.userName, 'with ID:', connection.id)
-        }
-    });
-}
+
 
 // function updateUserArray(id,connection){
 //     console.log('\n\n\n-----------------updateUserArray-----------------')
