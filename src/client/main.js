@@ -11,6 +11,7 @@ const editNameButton = document.querySelector('#editname')
 const storageID = localStorage.getItem('ClientID')
 const hiddenIDfield= document.querySelector('#userID')
 let noEdit = true
+console.log('14',noEdit)
 // const storageName = localStorage.getItem('name')
 
 
@@ -88,16 +89,7 @@ function choiceBy(type,data){
 }
 
 function handleIfMessage(messageInfo) {
-    if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')) {
-        let message = (`<p class="user">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`)
-        chat.innerHTML += message
-
-    }
-    else {
-        let message = `<p class="otheruser">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`
-        chat.innerHTML += message
-    }
-
+        chat.innerHTML += messageConstructor(messageInfo)   //`<p class="user">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`
 }
 
 
@@ -121,6 +113,7 @@ function sendSaveName() {
         sendButton.disabled = false
         editname.disabled = false
         window.localStorage.setItem('name', textfieldName.value)
+        console.log('125',noEdit)
         if (noEdit)
             window.localStorage.setItem('ClientID', clientUniqueIDGenerator())
         let storageID = localStorage.getItem('ClientID')
@@ -134,8 +127,9 @@ function sendSaveName() {
 
 function nameEdit() {
     saveNameButton.disabled = false
-    editname.disabled = false
-    noEdit == false
+    editname.disabled = true
+    noEdit = false
+    console.log('141',noEdit)
 
 }
 
@@ -156,15 +150,7 @@ function handleIfList(listItem) {
 
 
 function handleIfHistory(messageInfo) {
-    if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')) {
-        let message = (`<p id="texts" class="user">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`)
-        chat.innerHTML += message
-
-    }
-    else {
-        let message = `<p id="texts" class="otheruser">${messageInfo.date} ${messageInfo.name}: ${messageInfo.text}</p><br>`
-        chat.innerHTML += message
-    }
+    chat.innerHTML += messageConstructor(messageInfo)
 }
 
 
@@ -192,7 +178,6 @@ function sendInfoFromLocalStorage() {
         hiddenIDfield.value = localStorage.getItem('ClientID')
 
     }
-        
     else {
         saveNameButton.disabled = true
         editNameButton.disabled = false
@@ -208,4 +193,14 @@ function sendInfoFromLocalStorage() {
         webSocket.send(JSON.stringify({ type: 'history' }))
     }
 }
+// Create HTML elements for picture, date, message
+function messageConstructor(messageInfo){
+    let message
+    if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
+        message = `<div class='textMessageUser'><p class="user">${messageInfo.text}</p></div><br>` //<p class='date'></p>
+    }
+    else
+        message = `<div class ='textMessageOtherUser'><img class='messageUserIcon'src='${messageInfo.icon}'><p class="otheruser">${messageInfo.text}</p></div><br>` //<img></img><p class='date'></p>
 
+    return message
+}

@@ -26,7 +26,6 @@ li {
     right: 87.5%;
     width: 10px;
     height: 10px;
-    opacity: 100%;
     border-radius: 15px;
     background-color: #f0fffe;
     padding: 1px;
@@ -62,6 +61,24 @@ li {
     overflow-y: scroll;
 }
 
+p.user {
+    background-color: rgb(67, 46, 248);
+    color: #f0fffe;
+    padding: 6px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+p.otheruser {
+    color: #f0fffe;
+    padding: 6px;
+    border-radius: 15px;
+    display: inline-block;
+    background-color: rgb(21, 218, 253);
+}
+
+
+
 #chat {
     width: 500px;
     height: 500px;
@@ -70,23 +87,30 @@ li {
     border: 1px solid aqua;
 }
 
-p {
-    color: #f0fffe;
-    padding: 6px;
-    margin: 8px;
-    border-radius: 15px;
+
+
+.textMessageUser {
+    margin-left: 25em;
+    margin-bottom: 8px;
     display: inline-block;
+    background-color: wheat;
 }
 
-p.user {
-    margin-left: 19em;
-    background-color: rgb(67, 46, 248);
+.textMessageOtherUser {
+    /* margin: 8px; */
+    display: inline-block;
+    background-color: wheat;
 }
 
-p.otheruser {
-
-    background-color: rgb(21, 218, 253);
+.messageUserIcon {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
 }
+
+/* .date{
+
+} */
 
 /* 
 #messageField {
