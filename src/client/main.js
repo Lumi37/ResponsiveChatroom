@@ -9,14 +9,23 @@ const list = document.querySelector('#list')
 const refreshBtn = document.querySelector('#refreshList')
 const editNameButton = document.querySelector('#editname')
 const storageID = localStorage.getItem('ClientID')
-const hiddenIDfield= document.querySelector('#userID')
+const hiddenIDfield = document.querySelector('#userID')
+const uploadButton = document.querySelector('#uploadButton')
 let noEdit = true
+let otherUserTexts = []
+otherUserTexts.push({date: '', name: '', text: '', type: '', id: '', icon: ''})
 console.log('14',noEdit)
 // const storageName = localStorage.getItem('name')
 
 
 
-
+uploadButton.addEventListener('click',e=>{
+    
+    console.log("refreshing")
+    setTimeout(window.location.reload(),3000)
+    refreshList()
+    
+})
 
 //SENDING INFO FROM LOCALSTORAGE
 webSocket.addEventListener("open", () => {
@@ -196,11 +205,19 @@ function sendInfoFromLocalStorage() {
 // Create HTML elements for picture, date, message
 function messageConstructor(messageInfo){
     let message
+    console.log('--->',otherUserTexts)
     if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
         message = `<div class='textMessageUser'><p class="user">${messageInfo.text}</p></div><br>` //<p class='date'></p>
+        otherUserTexts.push(messageInfo)
     }
-    else
-        message = `<div class ='textMessageOtherUser'><img class='messageUserIcon'src='${messageInfo.icon}'><p class="otheruser">${messageInfo.text}</p></div><br>` //<img></img><p class='date'></p>
-
+    else{
+        console.log('CHOICE--->',messageInfo.icon === otherUserTexts[otherUserTexts.length-1].icon)
+        if(messageInfo.icon === otherUserTexts[otherUserTexts.length-1].icon)
+            message = `<div class ='textMessageOtherUserNoImage'><p class="otheruser">${messageInfo.text}</p></div><br>` //<img></img><p class='date'></p>
+        else{
+            otherUserTexts.push(messageInfo)
+            message = `<div class ='textMessageOtherUser'><img class='messageUserIcon'src='${messageInfo.icon}'><p class="otheruser">${messageInfo.text}</p></div><br>` 
+        }
+    }    
     return message
 }
