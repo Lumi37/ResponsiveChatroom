@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="main.js"></script>
+    <title>Chat App</title>
+</head>
+
+<body>
+    <div id="hello">Hello!</div>
+
+    <button id="editname" disabled>Edit Name</button>
+    <form ref='uploadForm' id='uploadForm' action='http://localhost:3000/' method='post' encType="multipart/form-data"
+        accept="images/*">
+        name:<input type="text" id="nameTextField" name="name" placeholder="Username"><button
+            id="saveName">Save</button><br>
+        <input type="text" name="id" id="userID">
+        <input type="file" name="sampleFile">
+        <input type="submit" value="upload pic" id="uploadButton">
+    </form>
+
+    <button id="refreshList">refresh list</button>
+    <br>
+
+
+    <div id="container">
+        <div id="userList">
+            <ul id="list"></ul>
+            </ul>
+        </div>
+        <div id="chat"></div>
+    </div>
+    message:<input type="text" id="messageField" placeholder="Enter Name first" disabled>
+    <button id="sendMessage" disabled>Send</button>
+    <button id="clear">Clear Chat</button><br>
+</body>
+
+</html>

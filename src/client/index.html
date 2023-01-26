@@ -6,37 +6,83 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="module" src="main.js"></script>
-    <title>Chat App</title>
+    <script type="module" src="index.js"></script>
+    <title>Document</title>
 </head>
 
 <body>
-    <div id="hello">Hello!</div>
-
-    <button id="editname" disabled>Edit Name</button>
-    <form ref='uploadForm' id='uploadForm' action='http://localhost:3000/' method='post' encType="multipart/form-data"
-        accept="images/*">
-        name:<input type="text" id="nameTextField" name="name" placeholder="Username"><button
-            id="saveName">Save</button><br>
-        <input type="text" name="id" id="userID">
-        <input type="file" name="sampleFile">
-        <input type="submit" value="upload pic" id="uploadButton">
-    </form>
-
-    <button id="refreshList">refresh list</button>
-    <br>
-
-
-    <div id="container">
-        <div id="userList">
-            <ul id="list"></ul>
-            </ul>
+    <div class="container">
+        <!-- SEARCH BAR -->
+        <div class="searchContainer">
+            <div><img src="images/searchicon.png" alt=""><input type="text" id="searchBar" placeholder="Search"></div>
         </div>
-        <div id="chat"></div>
+
+        <!-- LIST  -->
+        <div class="listContainer">
+            <div class="refreshIconContainer"><img src="images/refresh.png" id="refreshList" alt=""></div>
+
+            <ul id="list">
+                <li class="listItemsContainer">
+                    <div id="imgContainerList"><img src="images/dude.jpg" id="listUserIcon" alt="">
+                        <div id="onlinestatus"></div>
+                    </div>
+                    <div>
+                        <div id="userListName">Kostas</div>
+                        <div id="userLastMessage">kapapapapap</div>
+                    </div>
+                    <div id="dateContainer">
+                        <div id="lastOnline">48h</div>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+        <!-- USER PROFILE AND USERNAME -->
+        <div class="userIconUsernameContainer">
+            <div>
+                <form ref='uploadForm' id='uploadForm' action='http://localhost:3000/' method='post'
+                    encType="multipart/form-data" accept="images/*">
+                    <div class="imgUploadContainer">
+                        <img class="userProfilePicture" src="images/default.png" alt="default">
+                        <div class="middle">
+                            <input type="button" id="uploadButton" value="upload">
+                            <input type="file" name="" id="fileupload">
+                        </div>
+                    </div>
+
+                    <input type="text" id="username" placeholder="Username">
+                </form>
+
+                <div>
+                    <img class="saveNameButton" id="saveButton" src="images/save.png" alt="">
+                    <img class="editNameButton" id="editName" src="images/edit.png" alt="">
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAT - MESSAGE DISPLAY - TYPING -->
+        <div class="chatContainer" id="chat">
+
+            <!-- MESSAGES DISPLAY -->
+            <div class="messagesDisplay" id="messagesDisplay"></div>
+
+            <!-- USER TYPING AREA -->
+            <div class="textTypingContainer">
+                <div class="emoji">
+                    <img src="images/smiley.png" id="emoji" alt="emojis">
+                </div>
+                <textarea type="text" class="textTypingArea" id="typingArea"
+                    placeholder="type your message here."></textarea>
+                <div class="paperAirplane">
+                    <img src="images/paperAirplane.jpg" id="paperAirplane" alt="">
+                </div>
+            </div>
+
+        </div>
+
+
     </div>
-    message:<input type="text" id="messageField" placeholder="Enter Name first" disabled>
-    <button id="sendMessage" disabled>Send</button>
-    <button id="clear">Clear Chat</button><br>
 </body>
 
 </html>
