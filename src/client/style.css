@@ -207,11 +207,11 @@ ul {
 
 
 .tooltip {
-    visibility: hidden;
+    visibility: visible;
     text-align: center;
     color: cyan;
     font-size: 1.3rem;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     padding: 0.313rem;
     width: max-content;
     background-color: rgb(54, 54, 54);
@@ -220,7 +220,12 @@ ul {
     position: relative;
     z-index: 1;
     left: 2%;
-    top: 1rem
+    top: 1rem;
+}
+
+#saveButton:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
 }
 
 #userListName:hover .tooltip {
