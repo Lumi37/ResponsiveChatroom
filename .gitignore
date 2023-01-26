@@ -1,5 +1,5 @@
 node_modules
-src/client/images
+
 
 !src/client/images/lightmode/
 !src/client/images/darkmode/
