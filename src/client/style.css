@@ -52,7 +52,7 @@ p {
     padding: 1rem 2rem;
 }
 
-#onlinestatus {
+#online {
     width: 0.938rem;
     height: 0.938rem;
     border-radius: 50%;
@@ -64,7 +64,7 @@ p {
     position: absolute;
 }
 
-#offlinestatus {
+#offline {
     width: 0.938rem;
     height: 0.938rem;
     border-radius: 50%;
