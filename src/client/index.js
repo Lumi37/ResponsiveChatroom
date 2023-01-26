@@ -176,6 +176,7 @@ function sendInfoFromLocalStorage() {
         webSocket.send(JSON.stringify(messageToServer))
         webSocket.send(JSON.stringify({ type: 'history' }))
     }
+    refreshList()
 }
 
 //DETERMINE MESSAGE ACTION          

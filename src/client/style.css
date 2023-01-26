@@ -205,8 +205,10 @@ ul {
     place-items: left;
 }
 
+
 .tooltip {
     visibility: hidden;
+    text-align: center;
     color: cyan;
     font-size: 1.3rem;
     border-radius: 10px;
@@ -215,7 +217,10 @@ ul {
     background-color: rgb(54, 54, 54);
     opacity: 0;
     transition: opacity 0.4s;
-
+    position: relative;
+    z-index: 1;
+    left: 2%;
+    top: 1rem
 }
 
 #userListName:hover .tooltip {
@@ -239,6 +244,7 @@ ul {
     background-color: aliceblue;
     border: 0.063rem solid rgb(177, 177, 177, 0.3);
     font-size: 0.9rem;
+    width: max-content;
     border-radius: 1.25rem;
 }
 
