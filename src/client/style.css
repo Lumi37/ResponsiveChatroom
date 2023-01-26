@@ -1,7 +1,6 @@
 html {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 16px;
-
 }
 
 body {
@@ -80,7 +79,6 @@ p {
     width: 3.125rem;
     height: 3.125rem;
     position: relative;
-
 }
 
 ul {
@@ -103,7 +101,6 @@ ul {
     border: 1px solid rgb(165, 165, 165, 0.3);
 }
 
-
 /* SEARCH BAR grid item top left */
 .searchContainer {
     display: grid;
@@ -111,7 +108,6 @@ ul {
     grid-row: 1;
     grid-column: 1;
     border-right: 0.125rem solid rgb(167, 166, 166);
-
 }
 
 .searchContainer>div {
@@ -125,7 +121,6 @@ ul {
     width: 2rem;
     height: 2rem;
 }
-
 
 /* Search input */
 .searchContainer>div>input {
@@ -205,7 +200,6 @@ ul {
     place-items: left;
 }
 
-
 .tooltip {
     visibility: visible;
     text-align: center;
@@ -271,7 +265,6 @@ ul {
     box-shadow: 0.063rem 0.063rem 0.5rem 0.063rem #9e9c9c;
 }
 
-
 .saveNameButton:hover {
     opacity: 0.3;
 }
@@ -280,7 +273,6 @@ ul {
     opacity: 0.8;
     box-shadow: 0.063rem 0.063rem 0.5rem 0.063rem #9e9c9c;
 }
-
 
 .editNameButton:hover {
     opacity: 0.3;
@@ -291,12 +283,9 @@ ul {
     box-shadow: 0.063rem 0.063rem 0.5rem 0.063rem #9e9c9c;
 }
 
-
-
 .userIconUsernameContainer>div {
     display: grid;
     grid-template-columns: auto auto;
-
 }
 
 #uploadForm {
@@ -314,7 +303,6 @@ ul {
     grid-template-columns: auto auto auto auto;
 
 } */
-
 .userProfilePicture {
     width: 3.75rem;
     height: 3.75rem;
@@ -383,7 +371,6 @@ ul {
     font-family: cursive;
     border-radius: 15px;
     border: 0.063 solid rgb(165, 165, 165, 0.3);
-
 }
 
 #username:focus-visible {
@@ -406,7 +393,6 @@ ul {
     overflow-y: scroll;
 }
 
-
 .messageContainer {
     display: flex;
     justify-content: flex-start;
@@ -424,7 +410,6 @@ ul {
     cursor: pointer;
     padding: 0.125rem;
 }
-
 
 #otherUser {
     grid-column: 2;
@@ -449,7 +434,6 @@ ul {
     width: max-content;
 }
 
-
 /* TYPING TEXT AREA grid item of chatContainer*/
 .textTypingContainer {
     grid-row: 2;
@@ -471,14 +455,12 @@ ul {
 
 .textTypingContainer>textarea:focus-visible {
     outline: none;
-
 }
 
 .textTypingContainer>textarea::placeholder {
     font-size: 150%;
     text-align: center;
 }
-
 
 /* emoji icon */
 .emoji {
@@ -487,8 +469,6 @@ ul {
     place-items: center;
     grid-column: 1;
 }
-
-
 
 #emoji:hover {
     opacity: 0.3;
@@ -512,13 +492,11 @@ ul {
     opacity: 0.3;
 }
 
-
 #paperAirplane {
     cursor: pointer;
     width: 3.125rem;
     height: 3.125rem;
 }
-
 
 /* typing Area */
 .container>input {

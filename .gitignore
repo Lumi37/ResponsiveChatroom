@@ -1,7 +1,6 @@
 node_modules
 src/client/images
 
-!src/client/images/default.png
-!src/client/images/greenicon.png
-!src/client/images/greyicon.png
-
+!src/client/images/lightmode/
+!src/client/images/darkmode/
+!src/client/images/*

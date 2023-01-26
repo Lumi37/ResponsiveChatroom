@@ -6,7 +6,7 @@ import { WebSocketServer } from 'ws'
 
 const server = express()
 const wsServer = new WebSocketServer({ port: 3001 })
-server.use(express.static('/home/kostas/ResponsiveChatroom/src/client/'))
+server.use(express.static('/home/lumi/ResponsiveChatroom/src/client/'))
 server.use(express.json());
 server.use(fileUpload({
     limits: {
