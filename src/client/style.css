@@ -7,10 +7,12 @@ body {
     margin: 0;
 }
 
-p {
-    font-size: 1.5rem;
+#text {
+    width: 350px;
     padding: 0.563rem;
 }
+
+
 
 .imgUploadContainer {
     position: relative;
@@ -58,8 +60,8 @@ p {
     background-color: rgb(43, 255, 0);
     border: 0.125rem solid white;
     bottom: 0;
-    top: 90%;
-    left: 115%;
+    top: 60%;
+    left: 80%;
     position: absolute;
 }
 
@@ -70,14 +72,20 @@ p {
     background-color: gray;
     border: 0.125rem solid white;
     bottom: 0;
-    top: 90%;
-    left: 115%;
+    top: 60%;
+    left: 80%;
     position: absolute;
 }
 
+.listNameMessageContainer {
+    display: grid;
+    grid-template-rows: auto auto;
+    place-items: center;
+}
+
 #imgContainerList {
-    width: 3.125rem;
-    height: 3.125rem;
+    width: max-content;
+    height: max-content;
     position: relative;
 }
 
@@ -148,7 +156,7 @@ ul {
     position: relative;
     margin-top: 0.2rem;
     margin-bottom: 0.2rem;
-    grid-template-columns: min-content auto auto;
+    grid-template-columns: max-content 0.5fr 1fr;
     border: 0.063rem solid rgb(165, 165, 165, 0.3);
     transition: border 0.2s;
 }
@@ -176,6 +184,10 @@ ul {
 #refreshList {
     width: 1.25rem;
     height: 1.25rem;
+    background: url('images/lightmode/refresh.png ');
+    background-size: 1.25rem;
+    background-position: center;
+    background-color: white;
     margin-left: 0.625rem;
     margin-top: 0.625rem;
     background-color: white;
@@ -185,11 +197,22 @@ ul {
     padding: 0.125rem;
 }
 
-#refreshIcon:hover {
-    opacity: 0.3;
+#refreshList .tooltip {
+    position: relative;
+    z-index: 1;
+    left: 1.4rem;
+    top: 1rem;
 }
 
-#refreshIcon:active {
+#refreshList:hover .tooltip {
+    opacity: 1;
+}
+
+#refreshList:hover {
+    background-color: #f5eded;
+}
+
+#refreshList:active {
     opacity: 0.8;
     box-shadow: 0.063rem 0.063rem 0.5rem 0.063rem #9e9c9c;
 }
@@ -199,6 +222,8 @@ ul {
     grid-template-columns: auto;
     place-items: left;
 }
+
+
 
 .tooltip {
     visibility: visible;
@@ -222,6 +247,10 @@ ul {
     visibility: visible;
 }
 
+#userListName {
+    width: min-content;
+}
+
 #userListName:hover .tooltip {
     opacity: 1;
     visibility: visible;
@@ -230,11 +259,13 @@ ul {
 #userLastMessage {
     color: gray;
     font-size: 1rem;
+    width: min-content;
     padding-left: 3.125rem;
 }
 
 #dateContainer {
     display: grid;
+    padding-right: 0.625rem;
     place-items: center;
 }
 
@@ -260,13 +291,26 @@ ul {
     opacity: 0.3;
 }
 
+
+
 .userProfilePicture:active {
     opacity: 0.8;
     box-shadow: 0.063rem 0.063rem 0.5rem 0.063rem #9e9c9c;
 }
 
+.saveNameButton .tooltip {
+    position: relative;
+    z-index: 1;
+    left: 2.5rem;
+    top: 2.5rem;
+}
+
+.saveNameButton:hover .tooltip {
+    opacity: 1;
+}
+
 .saveNameButton:hover {
-    opacity: 0.3;
+    background-color: #f5eded;
 }
 
 .saveNameButton:active {
@@ -274,8 +318,19 @@ ul {
     box-shadow: 0.063rem 0.063rem 0.5rem 0.063rem #9e9c9c;
 }
 
+.editNameButton .tooltip {
+    position: relative;
+    z-index: 1;
+    left: 2.5rem;
+    top: 2.5rem;
+}
+
+.editNameButton:hover .tooltip {
+    opacity: 1;
+}
+
 .editNameButton:hover {
-    opacity: 0.3;
+    background-color: #f5eded;
 }
 
 .editNameButton:active {
@@ -314,11 +369,18 @@ ul {
     padding: 0.125rem;
 }
 
+.imagesalign {
+    display: flex;
+}
+
 .saveNameButton {
     width: 3.125rem;
     height: 3.125rem;
     margin-top: 1.25rem;
     margin-left: 0.313rem;
+    background: url('images/save.png');
+    background-size: 3.125rem;
+    background-position: center;
     background-color: white;
     border-radius: 50%;
     border: 0.063rem solid grey;
@@ -331,6 +393,9 @@ ul {
     height: 3.125rem;
     margin-top: 1.25rem;
     margin-left: 0.313rem;
+    background: url('images/lightmode/edit.png');
+    background-size: 3.125rem;
+    background-position: center;
     background-color: white;
     border-radius: 50%;
     border: 0.063rem solid grey;
@@ -411,27 +476,39 @@ ul {
     padding: 0.125rem;
 }
 
-#otherUser {
-    grid-column: 2;
+.otherUser[data-text-type="textonly"] {
+    margin-left: 6rem;
+}
+
+.otherUser {
     word-wrap: break-word;
+    font-size: 1.5rem;
+    padding: 0.625rem;
+    width: min-content;
+    grid-column: 2;
     border-radius: 0.938rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     position: relative;
     left: 2%;
     background-color: red;
-    width: max-content;
 }
 
-#mainUser {
+.mainUser[data-text-type="textOverflow"] {
+    left: 57%
+}
+
+.mainUser {
     word-wrap: break-word;
+    font-size: 1.5rem;
+    padding: 0.625rem;
+    width: min-content;
     border-radius: 0.938rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     position: relative;
     left: 80%;
     background-color: blue;
-    width: max-content;
 }
 
 /* TYPING TEXT AREA grid item of chatContainer*/
@@ -470,13 +547,27 @@ ul {
     grid-column: 1;
 }
 
+#emoji:hover .tooltip {
+    opacity: 1;
+}
+
+#emoji .tooltip {
+    position: relative;
+    z-index: 1;
+    left: 2.5rem;
+    top: 2.4rem;
+}
+
 #emoji:hover {
-    opacity: 0.3;
+    background-color: #f5eded;
 }
 
 #emoji {
+    background: url('images/lightmode/smiley.png');
+    background-size: 3.125rem;
+    background-position: center;
+    background-color: white;
     cursor: pointer;
-    opacity: 60%;
     width: 50px;
     height: 50px;
 }
@@ -489,10 +580,25 @@ ul {
 }
 
 #paperAirplane:hover {
-    opacity: 0.3;
+    background-color: #f5eded;
+}
+
+#paperAirplane:hover .tooltip {
+    opacity: 1;
+}
+
+#paperAirplane .tooltip {
+    position: relative;
+    z-index: 1;
+    left: -50px;
+    top: 2.4rem;
 }
 
 #paperAirplane {
+    background: url('images/lightmode/paperAirplane.jpg');
+    background-size: 3.125rem;
+    background-position: center;
+    background-color: white;
     cursor: pointer;
     width: 3.125rem;
     height: 3.125rem;

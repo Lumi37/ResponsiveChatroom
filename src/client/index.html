@@ -20,7 +20,12 @@
 
         <!-- LIST  -->
         <div class="listContainer">
-            <div class="refreshIconContainer"><img src="images/lightmode/refresh.png" id="refreshList" alt=""></div>
+            <div class="refreshIconContainer">
+                <div id="refreshList">
+                    <div class="tooltip">RefreshList</div>
+                </div>
+            </div>
+
 
             <ul id="list">
                 <li class="listItemsContainer">
@@ -48,22 +53,26 @@
                         <img class="userProfilePicture" src="images/lightmode/default.png" alt="default">
                         <div class="middle">
                             <input type="button" id="uploadButton" value="upload">
+                            <input type="text" name="" id="userID">
                             <input type="file" name="" id="fileupload">
                         </div>
                     </div>
 
                     <input type="text" id="username" placeholder="Username">
                 </form>
-
-                <div>
-                    <img class="saveNameButton" id="saveButton" src="images/lightmode/save.png" title="save" alt="">
-                    <img class="editNameButton" id="editName" src="images/lightmode/edit.png" title="edit" alt="">
+                <div class="imagesalign">
+                    <div class="saveNameButton" id="saveButton">
+                        <div class="tooltip">Save</div>
+                    </div>
+                    <div class=" editNameButton" id="editName">
+                        <div class="tooltip">Edit</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- CHAT - MESSAGE DISPLAY - TYPING -->
-        <div class="chatContainer" id="chat">
+        <div class=" chatContainer" id="chat">
 
             <!-- MESSAGES DISPLAY -->
             <div class="messagesDisplay" id="messagesDisplay"></div>
@@ -71,19 +80,18 @@
             <!-- USER TYPING AREA -->
             <div class="textTypingContainer">
                 <div class="emoji">
-                    <img src="images/lightmode/smiley.png" id="emoji" alt="emojis">
-                </div>
-                <textarea type="text" class="textTypingArea" id="typingArea"
-                    placeholder="type your message here."></textarea>
-                <div class="paperAirplane">
-                    <img src="images/lightmode/paperAirplane.jpg" id="paperAirplane" alt="">
-                </div>
-            </div>
-
-        </div>
-
-
-    </div>
+                    <div id="emoji">
+                        <div class="tooltip"">Emojis</div></div>
+                                    </div>
+                                    <textarea type=" text" maxlength="200" class="textTypingArea" id="typingArea"
+                            placeholder="type your message here."></textarea>
+                            <div class="paperAirplane">
+                                <div id="paperAirplane">
+                                    <div class="tooltip"">SendText</div></div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
 </body>
 
 </html>

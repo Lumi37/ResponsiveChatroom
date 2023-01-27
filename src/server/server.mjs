@@ -6,14 +6,13 @@ import { WebSocketServer } from 'ws'
 
 const server = express()
 const wsServer = new WebSocketServer({ port: 3001 })
-server.use(express.static('/home/lumi/ResponsiveChatroom/src/client/'))
+server.use(express.static('/home/kostas/ResponsiveChatroom/src/client/'))
 server.use(express.json());
 server.use(fileUpload({
     limits: {
         fileSize: 20000000 //20 MB
     }
 }));
-
 let ConnectedClients = 0
 let users = [];
 let list = [];
@@ -115,17 +114,17 @@ function setNewUserInfo(uID, username, connection) {
     console.log('\n\n\n-----------------setNewUserInfo-----------------')
     connection.userName = username
     connection.id = uID
-    list.push({ name: username, id: uID, status: 'online', icon:'images/default.png' })
+    list.push({ name: username, id: uID, status: 'online', icon:'images/default.png', lastMessage:'' })
     console.log(`User ${connection.userName} Connected!`)
 }
 
 function handleIfList() {
     console.log('\n\n\n-----------------handleIfList-----------------')
-    list.forEach((user, i) => {
+    list.forEach(user => {
         console.log(`List:\n${user.name} : ${user.id} : ${user.status}`)
     })
     users.forEach(user => {
-        user.send(JSON.stringify({ list, type: 'list' }))
+        user.send(JSON.stringify({ list, type: 'list'}))
     })
 
 }
@@ -144,7 +143,9 @@ function handleIfHistory() {
 function handleIfMessage(message, Name, userID) {
     console.log('\t\n\n\n-----------------handleIfMessage-----------------')
     const currentdate = dateNow()
-    let userIcon = list[list.findIndex(user => user.id ==  userID)].icon
+    const listCurrentIndex = list.findIndex(user => user.id ==  userID)
+    list[listCurrentIndex].lastMessage = message
+    let userIcon = list[listCurrentIndex].icon
     let messageToClient = JSON.stringify({ date: currentdate, name: Name, text: message, type: 'message', id: userID, icon: userIcon})
     let historyText = JSON.stringify({ date: currentdate, name: Name, text: message, type: 'history', id: userID, icon: userIcon})
     history.push(historyText) //SAVING TO HISTORY ARR

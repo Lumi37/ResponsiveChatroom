@@ -70,10 +70,12 @@ function handleIfMessage(messageInfo) {
     let message = messageConstructor(messageInfo)
     chat.innerHTML += message
     chat.scrollTop +=  maxScrollHeight()
+    refreshList()
+    
 }
 function maxScrollHeight(){
     let maximumScrollHeight = 0
-    document.querySelectorAll('p').forEach(p=>{
+    document.querySelectorAll('#messagesDisplay>div').forEach(p=>{
         maximumScrollHeight += p.offsetHeight
     })
     return maximumScrollHeight
@@ -84,27 +86,31 @@ function maxScrollHeight(){
 
 function sendMessageToServer() {
     let ChatText = textfieldMessage.value;
+    if(ChatText.length>200){
+        ChatText = ChatText.slice(0,200)
+    }
     let userName = textfieldName.value;
     let storeID = localStorage.getItem('ClientID')
     textfieldMessage.value = ''
-    let messageToServer = { text: ChatText, name: userName, type: 'message', id: storeID }
-    if (ChatText != '')
+    if (ChatText !== '' || ChatText !=='\n'){
+        let messageToServer = { text: ChatText, name: userName, type: 'message', id: storeID }
         webSocket.send(JSON.stringify(messageToServer))
+}
 }
 
 
 function sendSaveName() {
     if (!textfieldName.value == '') {
         // submitFileButton.disabled = false
-        saveNameButton.disabled = true
-        textfieldMessage.disabled = false
-        sendButton.disabled = false
-        editname.disabled = false
+        // saveNameButton.disabled = true
+        // textfieldMessage.disabled = false
+        // sendButton.disabled = false
+        // editName.disabled = false
         window.localStorage.setItem('name', textfieldName.value)
         if (noEdit)
             window.localStorage.setItem('ClientID', clientUniqueIDGenerator())
         let storeID = localStorage.getItem('ClientID')
-        hiddenIDfield.value = storageID
+        hiddenIDfield.value = storeID
         let name = textfieldName.value
         let messageToServer = { text: name, type: 'name', id: storeID }
         webSocket.send(JSON.stringify(messageToServer))
@@ -112,9 +118,9 @@ function sendSaveName() {
 }
 
 function nameEdit() {
-    saveNameButton.disabled = false
-    editName.disabled = true
-    noEdit == false
+    // saveNameButton.disabled = false
+    // editName.disabled = true
+    // noEdit == false
 
 }
 
@@ -122,22 +128,41 @@ function nameEdit() {
 function handleIfList(listItem) {
 
     list.innerHTML = ''
+   
     let userList = listItem.list
-    console.log(userList)
     userList.forEach(elem => {
-            list.innerHTML += `<li class="listItemsContainer"><div id="imgContainerList"><img src="${elem.icon}" id="listUserIcon" alt="">
-            <div id="${elem.status}"></div></div><div><div id="userListName">${elem.name}<span class="tooltip"">${elem.name}</span></div><div id="userLastMessage">kapapapapap</div></div>
-            <div id="dateContainer"><div id="lastOnline">48h</div></div></li>`
+    let name ='';
+    let message = '';
+    if(elem.name.length> 15)
+        name = elem.name.slice(0,14) + '...'
+    else
+        name = elem.name
+    if(elem.lastMessage.length>15)
+        message = elem.lastMessage.slice(0,16) + '...'
+    else 
+        message = elem.lastMessage
+    list.innerHTML += `
+            <li class="listItemsContainer">  
+                <div id="imgContainerList">
+                    <img src="${elem.icon}" id="listUserIcon" alt="">
+                    <div id="${elem.status}"></div>
+                </div>
+                <div class="listNameMessageContainer">
+                    <div id="userListName">${name}<div class="tooltip"">${elem.name}</div></div>
+                    <div id="userLastMessage">${message}</div>
+                </div>
+                <div id="dateContainer"><div id="lastOnline">48h</div></div>
+            </li>`             
     })
 }
 
 
 function handleIfHistory(messageInfo) {
     let datenow = new Date()
-    console.log(datenow.getSeconds()-date.getSeconds())
     if (datenow.getSeconds()-date.getSeconds() < 3){
         chat.innerHTML += messageConstructor(messageInfo)
         chat.scrollTop +=  maxScrollHeight()
+        refreshList()
     }
 }
 
@@ -165,10 +190,10 @@ function sendInfoFromLocalStorage() {
         window.localStorage.setItem('ClientID', clientUniqueIDGenerator()) //REGISTER ID TO STORAGE
         hiddenIDfield.value = localStorage.getItem('ClientID')}
     else {
-        saveNameButton.disabled = true
-        editNameButton.disabled = false
-        sendButton.disabled = false
-        textfieldMessage.disabled = false
+        // saveNameButton.disabled = true
+        // editNameButton.disabled = false
+        // sendButton.disabled = false
+        // textfieldMessage.disabled = false
         const user = localStorage.getItem('name')
         let clientID = localStorage.getItem('ClientID');
         let messageToServer = { text: user, type: 'name', id: clientID }
@@ -193,21 +218,41 @@ function choiceBy(type, data) {
 
 function messageConstructor(messageInfo){
     let message
-    console.log('--->',otherUserTexts)
-    if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
-        message = `<p id="mainUser">${messageInfo.text}</p>` //<p class='date'></p>
-        otherUserTexts.push(messageInfo)
-    }
-    else{
-        console.log('CHOICE--->',messageInfo.icon === otherUserTexts[otherUserTexts.length-1].icon)
-        if(messageInfo.id === otherUserTexts[otherUserTexts.length-1].id)
-            message = `<p id="otherUser">${messageInfo.text}</p>` //<img></img><p class='date'></p>
-        else{
+    if(messageInfo.text.length > 29){
+        if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
+            message = `<div class="mainUser" id='text' data-text-type="textOverflow">${messageInfo.text}</div>` 
             otherUserTexts.push(messageInfo)
-            message = `<div class="messageContainer">
-            <img class="chatImages" src="${messageInfo.icon}">
-            </img><p id="otherUser">${messageInfo.text}</p></div>` 
         }
-    }    
+        else{
+            console.log('CHOICE--->',messageInfo.icon === otherUserTexts[otherUserTexts.length-1].icon)
+            if(messageInfo.id === otherUserTexts[otherUserTexts.length-1].id)
+                message = `<div class="otherUser" id='text' data-text-type="textonly">${messageInfo.text}</div>` 
+            else{
+                otherUserTexts.push(messageInfo)
+                message = `
+                <div class="messageContainer">
+                    <img class="chatImages" src="${messageInfo.icon}"></img>
+                    <div class="otherUser" id='text' >${messageInfo.text}</div>
+                </div>`  
+            }
+        }    
+    }else{
+        if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
+            message = `<div class="mainUser">${messageInfo.text}</div>` 
+            otherUserTexts.push(messageInfo)
+        }
+        else{
+            if(messageInfo.id === otherUserTexts[otherUserTexts.length-1].id)
+                message = `<div class="otherUser" data-text-type="textonly">${messageInfo.text}</div>` 
+            else{
+                otherUserTexts.push(messageInfo)
+                message = `
+                <div class="messageContainer">
+                    <img class="chatImages" src="${messageInfo.icon}"></img>
+                    <div class="otherUser" >${messageInfo.text}</div>
+                </div>`  
+            }
+        } 
+    }
     return message
 }
