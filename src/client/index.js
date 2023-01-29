@@ -231,6 +231,9 @@ function choiceBy(type, data) {
         handleIfList(data)
     if (type == 'history')
         handleIfHistory(data)
+    if (type == 'refresh')
+        refreshList()
+    
 }
 
 
