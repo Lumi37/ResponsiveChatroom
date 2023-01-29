@@ -531,6 +531,9 @@ ul {
     background-color: rgb(63, 232, 255);
 }
 
+.hiddenlabelID{
+    display: none;
+}
 .mainUser[data-text-type="textOverflow"] {
     left: 57%
 }

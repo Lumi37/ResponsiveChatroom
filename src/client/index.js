@@ -1,3 +1,5 @@
+
+
 const webSocket = new WebSocket('ws://localhost:3001');
 const textfieldName = document.querySelector('#username')
 const saveNameButton = document.querySelector("#saveButton")
@@ -15,13 +17,17 @@ const fileInput = document.querySelector('#fileupload')
 const submitFileButton =document.querySelector('#submitFile')
 let date = new Date()
 let noEdit = true
-let historyTimeLimit = true
 let otherUserTexts = []
 otherUserTexts.push({date: '', name: '', text: '', type: '', id: '', icon: ''})
 
 // file submit
-uploadButton.addEventListener('click',e=>{fileInput.click()})
-fileInput.onchange = ()=>  submitFileButton.click();
+uploadButton.addEventListener('click',e=>{
+    fileInput.click()
+})
+fileInput.onchange = ()=>{
+    submitFileButton.click();
+    refreshPage()
+}
 
 //SENDING INFO FROM LOCALSTORAGE
 webSocket.addEventListener("open", () => { sendInfoFromLocalStorage() })
@@ -65,6 +71,8 @@ function MessageType(type) {
             return 'list'
         case 'history':
             return 'history'
+        case 'refreshList':
+            return 'refreshList'
         default:
             console.log('unknown error')
     }
@@ -183,6 +191,7 @@ function handleIfHistory(messageInfo) {
 
 function refreshList() {
     list.innerHTML = ''
+    settleIcons()
     webSocket.send(JSON.stringify({ type: 'list' }))
 }
 
@@ -231,7 +240,7 @@ function choiceBy(type, data) {
         handleIfList(data)
     if (type == 'history')
         handleIfHistory(data)
-    if (type == 'refresh')
+    if (type == 'refreshList')
         refreshList()
     
 }
@@ -252,6 +261,7 @@ function messageConstructor(messageInfo){
                 otherUserTexts.push(messageInfo)
                 message = `
                 <div class="messageContainer">
+                    <label id="hiddenlabelID">${storageID}</label>
                     <img class="chatImages" src="${messageInfo.icon}"></img>
                     <div class="otherUser" id='text' >${messageInfo.text}</div>
                 </div>`  
@@ -269,6 +279,7 @@ function messageConstructor(messageInfo){
                 otherUserTexts.push(messageInfo)
                 message = `
                 <div class="messageContainer">
+                    <label id="hiddenlabelID">${storageID}</label>
                     <img class="chatImages" src="${messageInfo.icon}"></img>
                     <div class="otherUser" >${messageInfo.text}</div>
                 </div>`  
@@ -276,4 +287,19 @@ function messageConstructor(messageInfo){
         } 
     }
     return message
+}
+
+function refreshPage(){
+    setTimeout( ()=>{window.location.reload()} , 500 )  
+}
+function settleIcons(){
+    //document.getElementById('make-image').src="/path/to/images/" + selected_text + ".jpg";
+   let userIcons = document.querySelectorAll('.chatImages')
+    console.log(userIcons)
+  let  userIDs = document.querySelectorAll('#hiddenlabelID').textContent
+    console.log(userIDs)
+    userIcons.forEach((icon,i)=>{ 
+        icon.src = 'images/'+userIDs[i]+'.png'
+         console.log( icon.src,'  ',userIDs[i])  
+    })
 }
