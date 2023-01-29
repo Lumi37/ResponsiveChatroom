@@ -6,18 +6,23 @@ const chat = document.querySelector('#messagesDisplay')
 const list = document.querySelector('#list')
 const refreshButton = document.querySelector('#refreshList')
 const editNameButton = document.querySelector('#editName')
-const uploadButton = document.querySelector('#uploadButton')
 const storageID = localStorage.getItem('ClientID')
 const hiddenIDfield = document.querySelector('#userID')
 const sendButton = document.querySelector("#paperAirplane")
+const uploadButton = document.querySelector('#uploadButton')
+const fileInput = document.querySelector('#fileupload')
+const submitFileButton =document.querySelector('#submitFile')
 let date = new Date()
 let noEdit = true
 let historyTimeLimit = true
 let otherUserTexts = []
 otherUserTexts.push({date: '', name: '', text: '', type: '', id: '', icon: ''})
 
-
-
+// file submit
+uploadButton.addEventListener('click',e=>{
+    fileInput.click()
+})
+fileInput.onchange = ()=>  submitFileButton.click();
 //SENDING INFO FROM LOCALSTORAGE
 webSocket.addEventListener("open", () => { sendInfoFromLocalStorage() })
 
@@ -68,6 +73,7 @@ function MessageType(type) {
 
 function handleIfMessage(messageInfo) {
     let message = messageConstructor(messageInfo)
+    console.log(message)
     chat.innerHTML += message
     chat.scrollTop +=  maxScrollHeight()
     refreshList()
@@ -101,11 +107,13 @@ function sendMessageToServer() {
 
 function sendSaveName() {
     if (!textfieldName.value == '') {
+        saveNameButton.classList.remove('saveNameButton')
+        saveNameButton.classList.add('saveNameButtonDisabled')
         // submitFileButton.disabled = false
-        // saveNameButton.disabled = true
-        // textfieldMessage.disabled = false
+        textfieldMessage.disabled = false
         // sendButton.disabled = false
-        // editName.disabled = false
+        saveNameButton.classList.remove('saveNameButtonDisabled')
+        saveNameButton.classList.add('saveNameButton')
         window.localStorage.setItem('name', textfieldName.value)
         if (noEdit)
             window.localStorage.setItem('ClientID', clientUniqueIDGenerator())
@@ -118,9 +126,11 @@ function sendSaveName() {
 }
 
 function nameEdit() {
-    // saveNameButton.disabled = false
-    // editName.disabled = true
-    // noEdit == false
+    saveNameButton.classList.remove('saveNameButton')
+    saveNameButton.classList.add('saveNameButtonDisabled')
+    editNameButton.classList.remove('editNameButtonDisabled')
+    editNameButton.classList.add('editNameButton')
+    noEdit == false
 
 }
 
@@ -190,10 +200,12 @@ function sendInfoFromLocalStorage() {
         window.localStorage.setItem('ClientID', clientUniqueIDGenerator()) //REGISTER ID TO STORAGE
         hiddenIDfield.value = localStorage.getItem('ClientID')}
     else {
-        // saveNameButton.disabled = true
-        // editNameButton.disabled = false
+        saveNameButton.classList.remove('saveNameButton')
+        saveNameButton.classList.add('saveNameButtonDisabled')
+        editNameButton.classList.remove('editNameButtonDisabled')
+        editNameButton.classList.add('editNameButton')
         // sendButton.disabled = false
-        // textfieldMessage.disabled = false
+        textfieldMessage.disabled = false
         const user = localStorage.getItem('name')
         let clientID = localStorage.getItem('ClientID');
         let messageToServer = { text: user, type: 'name', id: clientID }

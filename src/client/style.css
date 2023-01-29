@@ -18,22 +18,22 @@ body {
     position: relative;
     width: 50%;
 }
-
-.userProfilePicture {
-    opacity: 1;
-    display: block;
-    width: 100%;
-    height: auto;
-    transition: .5s ease;
-    backface-visibility: hidden;
+#submitFile{
+    width:1px;
+    height:1px;
+    visibility:hidden;
 }
-
+#userID{
+    width:1px;
+    height:1px;
+    visibility:hidden;
+}
 .middle {
     transition: .5s ease;
     opacity: 0;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 35%;
+    left: 98%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
@@ -47,10 +47,16 @@ body {
 }
 
 #uploadButton {
-    background-color: #04AA6D;
+    background-color: gray;
+    border-radius: 15px;
+    cursor:pointer;
+    opacity: 1;
     color: white;
-    font-size: 1rem;
-    padding: 1rem 2rem;
+    font-size: 0.5rem;
+    padding: 0.5rem;
+}
+#uploadButton:active{
+    opacity:0.6;
 }
 
 #online {
@@ -145,6 +151,7 @@ ul {
 /* LIST grid item bottom left */
 .listContainer {
     display: grid;
+    overflow-y:scroll;
     grid-template-rows: min-content auto;
     grid-row: 2;
     grid-column: 1;
@@ -240,6 +247,7 @@ ul {
     z-index: 1;
     left: 2%;
     top: 1rem;
+    user-select: none; 
 }
 
 #saveButton:hover .tooltip {
@@ -361,11 +369,14 @@ ul {
 .userProfilePicture {
     width: 3.75rem;
     height: 3.75rem;
+    opacity: 1;
+    display: block;
+    transition: .5s ease;
+    backface-visibility: hidden;
     margin: 0.625rem;
     background-color: white;
     border-radius: 50%;
     border: 0.063rem solid grey;
-    cursor: pointer;
     padding: 0.125rem;
 }
 
@@ -403,11 +414,14 @@ ul {
     padding: 0.125rem;
 }
 
-.saveNameButton:disabled {
+.saveNameButtonDisabled{
     width: 3.125rem;
     height: 3.125rem;
     margin-top: 1.25rem;
     margin-left: 0.313rem;
+    background: url('images/save.png');
+    background-size: 3.125rem;
+    background-position: center;
     background-color: white;
     border-radius: 50%;
     border: 1px solid grey;
@@ -416,11 +430,14 @@ ul {
     padding: 0.125rem;
 }
 
-.editNameButton:disabled {
+.editNameButtonDisabled {
     width: 3.125rem;
     height: 3.125rem;
     margin-top: 1.25rem;
     margin-left: 0.313rem;
+    background: url('images/lightmode/edit.png');
+    background-size: 3.125rem;
+    background-position: center;
     background-color: white;
     border-radius: 50%;
     border: 1px solid grey;
@@ -524,17 +541,17 @@ ul {
     padding-bottom: 0.625rem;
 }
 
-.textTypingContainer>textarea {
+.textTypingArea{
     font-size: 1.563rem;
     grid-column: 2/5;
     border: none;
 }
 
-.textTypingContainer>textarea:focus-visible {
+.textTypingArea:focus-visible {
     outline: none;
 }
 
-.textTypingContainer>textarea::placeholder {
+.textTypingArea::placeholder {
     font-size: 150%;
     text-align: center;
 }
