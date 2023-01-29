@@ -191,6 +191,7 @@ function setUserInfo(id, name, connection) {
 }
 
 function handleFile(req, res) {
+    console.log(req)
     let sampleFile, uploadPath, name, id,fileExtention
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
@@ -199,8 +200,8 @@ function handleFile(req, res) {
     id = req.body.id
     sampleFile = req.files.sampleFile;
     fileExtention = sampleFile.name.slice(sampleFile.name.indexOf('.'),sampleFile.name.length)
-    sampleFile.name = id + fileExtention
-    uploadPath = '/home/kostas/projects/ResponsiveChatroom/src/client/images/' + sampleFile.name;
+    sampleFile.name = id + '.png'
+    uploadPath = '/home/lumi/ResponsiveChatroom/src/client/images/' + sampleFile.name;
     list[list.findIndex(user => user.id ==  id)].icon = `images/${sampleFile.name}`  //Register icon to user (found by id)
     console.log('file size: ', req.files.sampleFile.size)
     sampleFile.mv(uploadPath, function (err) {

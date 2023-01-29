@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="index.js"></script>
-    <title>Document</title>
+    <link rel="icon" href="images/darkmode/download.png" type="image/x-icon">
+    <title>Responsive Chat App!</title>
 </head>
 
 <body>
@@ -34,30 +35,24 @@
 
         <!-- USER PROFILE AND USERNAME -->
         <div class="userIconUsernameContainer">
-            <div>
-                <form ref='uploadForm' id='uploadForm' action='http://localhost:3000/' method='post'
-                    encType="multipart/form-data" accept="images/*">
-                    <div class="imgUploadContainer">
-                        <img class="userProfilePicture" src="images/lightmode/default.png" alt="default">
-                        <div class="middle">
-                            <input type="button" id="uploadButton" value="upload">
-                        </div>
-                        <input type="text" name="" id="userID">
-                        <input type="file" name="" id="fileupload">
-                        <input type='submit' id='submitFile'>
-                    </div>
-
-                    <input type="text" id="username" placeholder="Username">
-                </form>
-                <div class="imagesalign">
-                    <div class="saveNameButton" id="saveButton">
-                        <div class="tooltip">Save</div>
-                    </div>
-                    <div class=" editNameButton" id="editName">
-                        <div class="tooltip">Edit</div>
-                    </div>
+            <!-- <div> -->
+            <div class="imgUploadContainer">
+                <img class="userProfilePicture" src="images/lightmode/default.png" alt="default">
+                <div class="middle">
+                    <input type="button" id="uploadButton" value="upload">
                 </div>
             </div>
+
+            <input type="text" id="username" name='name' placeholder="Username">
+            <div class="imagesalign">
+                <div id="saveButton"> <!-- class="saveNameButton" -->
+                    <div class="tooltip">Save</div>
+                </div>
+                <div id="editNameButton"> <!-- class=" editNameButton" -->
+                    <div class="tooltip">Edit</div>
+                </div>
+            </div>
+            <!-- </div> -->
         </div>
 
         <!-- CHAT - MESSAGE DISPLAY - TYPING -->
@@ -81,6 +76,13 @@
                                         </div>
                                     </div>
                                 </div>
+        <form ref='uploadForm' id='uploadForm' action='http://localhost:3000/' method='post' encType="
+                                        multipart/form-data" accept="images/*">
+                                        <input type="text" name="id" id="userID">
+                                        <input type="file" name="sampleFile" id="fileupload">
+                                        <input type="text" id="hiddenusername" name='name' placeholder="Username">
+                                        <input type='submit' id='submitFile' value='upload'>
+                                        </form>
 </body>
 
 </html>

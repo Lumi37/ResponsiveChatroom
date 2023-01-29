@@ -5,8 +5,9 @@ const textfieldMessage = document.querySelector('#typingArea')
 const chat = document.querySelector('#messagesDisplay')
 const list = document.querySelector('#list')
 const refreshButton = document.querySelector('#refreshList')
-const editNameButton = document.querySelector('#editName')
+const editNameButton = document.querySelector('#editNameButton')
 const storageID = localStorage.getItem('ClientID')
+const hiddenUsernamefield = document.querySelector('#hiddenusername')
 const hiddenIDfield = document.querySelector('#userID')
 const sendButton = document.querySelector("#paperAirplane")
 const uploadButton = document.querySelector('#uploadButton')
@@ -19,18 +20,17 @@ let otherUserTexts = []
 otherUserTexts.push({date: '', name: '', text: '', type: '', id: '', icon: ''})
 
 // file submit
-uploadButton.addEventListener('click',e=>{
-    fileInput.click()
-})
+uploadButton.addEventListener('click',e=>{fileInput.click()})
 fileInput.onchange = ()=>  submitFileButton.click();
+
 //SENDING INFO FROM LOCALSTORAGE
 webSocket.addEventListener("open", () => { sendInfoFromLocalStorage() })
 
 //SAVING NAME, SENDING TO SERVER
-saveNameButton.addEventListener('click', e => { sendSaveName() })
+saveNameButton.addEventListener('click', e => { if(saveNameButton.id === 'saveButton')sendSaveName() })
 
 //EDIT NAME
-editNameButton.addEventListener('click', e => { nameEdit() })
+editNameButton.addEventListener('click', e => { if(editNameButton.id === 'editNameButton')nameEdit() })
 
 // SENDING MESSAGE TO SERVER
  sendButton.addEventListener("click", e => { sendMessageToServer() })
@@ -106,19 +106,23 @@ function sendMessageToServer() {
 
 
 function sendSaveName() {
+    console.log('save pressed!')
     if (!textfieldName.value == '') {
-        saveNameButton.classList.remove('saveNameButton')
-        saveNameButton.classList.add('saveNameButtonDisabled')
+        saveNameButton.id = 'saveButtonDisabled'
+        editNameButton.id = 'editNameButton'
         // submitFileButton.disabled = false
-        textfieldMessage.disabled = false
         // sendButton.disabled = false
-        saveNameButton.classList.remove('saveNameButtonDisabled')
-        saveNameButton.classList.add('saveNameButton')
+        textfieldMessage.disabled = false
         window.localStorage.setItem('name', textfieldName.value)
+        console.log('savename',noEdit)
         if (noEdit)
             window.localStorage.setItem('ClientID', clientUniqueIDGenerator())
         let storeID = localStorage.getItem('ClientID')
+        let storeName = localStorage.getItem('name')
+        console.log('StoreID = ', storeID)
+        hiddenUsernamefield.value = storeName
         hiddenIDfield.value = storeID
+        console.log('hiddenIDfield = ', hiddenIDfield.value)
         let name = textfieldName.value
         let messageToServer = { text: name, type: 'name', id: storeID }
         webSocket.send(JSON.stringify(messageToServer))
@@ -126,11 +130,11 @@ function sendSaveName() {
 }
 
 function nameEdit() {
-    saveNameButton.classList.remove('saveNameButton')
-    saveNameButton.classList.add('saveNameButtonDisabled')
-    editNameButton.classList.remove('editNameButtonDisabled')
-    editNameButton.classList.add('editNameButton')
-    noEdit == false
+    saveNameButton.id='saveButton'
+    console.log('edit pressed!')
+    editNameButton.id = 'editNameButtonDisabled'
+    noEdit = false
+    console.log('edit',noEdit)
 
 }
 
@@ -196,18 +200,20 @@ function clientUniqueIDGenerator() {
 
 //SENDING USER INFO FROM LOCALSTORAGE
 function sendInfoFromLocalStorage() {
+    console.log('sendInfoFromLocalStorage')
     if (!(localStorage.getItem('ClientID'))){
         window.localStorage.setItem('ClientID', clientUniqueIDGenerator()) //REGISTER ID TO STORAGE
         hiddenIDfield.value = localStorage.getItem('ClientID')}
     else {
-        saveNameButton.classList.remove('saveNameButton')
-        saveNameButton.classList.add('saveNameButtonDisabled')
-        editNameButton.classList.remove('editNameButtonDisabled')
-        editNameButton.classList.add('editNameButton')
-        // sendButton.disabled = false
+        saveNameButton.id='saveButtonDisabled'
+        // editNameButton.classList.remove('editNameButtonDisabled')
+        // editNameButton.classList.add('editNameButton')
+        // sendButton.disabled = false 
         textfieldMessage.disabled = false
         const user = localStorage.getItem('name')
         let clientID = localStorage.getItem('ClientID');
+        hiddenUsernamefield.value = user
+        hiddenIDfield.value = clientID
         let messageToServer = { text: user, type: 'name', id: clientID }
         textfieldName.value = user
         webSocket.send(JSON.stringify(messageToServer))
