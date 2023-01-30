@@ -45,6 +45,7 @@ saveNameButton.addEventListener('click', e => {
      refreshList(); 
 })
 
+
 //EDIT NAME
 editNameButton.addEventListener('click', e => { if(editNameButton.id === 'editNameButton')nameEdit() })
 
