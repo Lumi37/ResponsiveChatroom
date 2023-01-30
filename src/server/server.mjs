@@ -31,7 +31,6 @@ wsServer.on("connection", (ws) => {
     ws.id = null
     ws.userName = ''
     ws.status = 'online'
-    let dateRightNow = new Date();
     users.push(ws)
     console.log("New client Connected!")
     ConnectedClients += 1
@@ -191,9 +190,9 @@ function setUserInfo(id, name, connection) {
     console.log('\n\n\n-----------------setUserInfo-----------------')
     list.forEach(user => {
         if (id === user.id) {
-            let dateRightNow = new Date();
             connection.userName = name
             connection.id = id
+            user.name = name
             user.dateHours = 'online'
             console.log(user)
             user.status = 'online'
