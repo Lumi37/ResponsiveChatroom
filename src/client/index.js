@@ -1,5 +1,3 @@
-
-
 const webSocket = new WebSocket('ws://localhost:3001');
 const textfieldName = document.querySelector('#username')
 const saveNameButton = document.querySelector("#saveButton")
