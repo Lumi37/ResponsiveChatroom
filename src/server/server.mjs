@@ -6,7 +6,8 @@ import { WebSocketServer } from 'ws'
 
 const server = express()
 const wsServer = new WebSocketServer({ port: 3001 })
-server.use(express.static('/home/lumi/ResponsiveChatroom/src/client/'))
+const __dirname = new URL('.', import.meta.url).pathname
+server.use(express.static(`${__dirname}/../client/`))
 server.use(express.json());
 server.use(fileUpload({
     limits: {
@@ -18,6 +19,7 @@ let users = [];
 let list = [];
 let history = []
 
+console.log(__dirname)
 server.post('/', function (req, res) {
     handleFile(req, res)
 });
@@ -30,7 +32,7 @@ wsServer.on("connection", (ws) => {
     ws.id = null
     ws.userName = ''
     ws.status = 'online'
-
+    let dateRightNow = new Date();
     users.push(ws)
     console.log("New client Connected!")
     ConnectedClients += 1
@@ -51,7 +53,7 @@ wsServer.on("connection", (ws) => {
             handleIfMessage(data.text, data.name, data.id)
         }
         if (messageType === 'list') { handleIfList() }
-        if (messageType === 'history') { handleIfHistory() }
+        if (messageType === 'history') { handleIfHistory(data.id) }
 
         console.log("Current List: ", users.length)
     })
@@ -64,7 +66,11 @@ wsServer.on("connection", (ws) => {
     ws.on('close', () => {
         ConnectedClients -= 1
         try {
-            list[list.findIndex(user => user.id === ws.id)].status = 'offline'
+            let listIndex = list.findIndex(user => user.id === ws.id)
+            let dateOffline = new Date()
+            list[listIndex].dateHours = dateOffline.getHours()+1
+            list[listIndex].dateDay = dateOffline.getDay()+1
+            list[listIndex].status = 'offline'
         }
         catch (error) {
             console.log('unregistered client')
@@ -114,7 +120,8 @@ function setNewUserInfo(uID, username, connection) {
     console.log('\n\n\n-----------------setNewUserInfo-----------------')
     connection.userName = username
     connection.id = uID
-    list.push({ name: username, id: uID, status: 'online', icon:'images/default.png', lastMessage:'' })
+    let datenow ='online'
+    list.push({ name: username, id: uID, status: 'online', icon:'images/default.png', lastMessage:'' ,dateHours:datenow,dateDay:'' })
     console.log(`User ${connection.userName} Connected!`)
 }
 
@@ -128,12 +135,15 @@ function handleIfList() {
     })
 
 }
-function handleIfHistory() {
+function handleIfHistory(id) {
     console.log('\n\n\n-----------------handleIfHistory-----------------\nLoading: ', history.length, 'messages...')
     users.forEach(user => {
         history.forEach(messageObject => {
-            let messageToClient = messageObject
-            user.send(messageToClient)
+            // messageObject.requesterID = id
+            console.log(messageObject)
+            let sliced
+            sliced = messageObject.slice(0,messageObject.length-1)+`,"requesterID":"${id}"}`
+            user.send(sliced)
         })
 
     })
@@ -182,8 +192,11 @@ function setUserInfo(id, name, connection) {
     console.log('\n\n\n-----------------setUserInfo-----------------')
     list.forEach(user => {
         if (id === user.id) {
+            let dateRightNow = new Date();
             connection.userName = name
             connection.id = id
+            user.dateHours = 'online'
+            console.log(user)
             user.status = 'online'
             console.log('user identified as ', connection.userName, 'with ID:', connection.id)
         }
@@ -201,7 +214,7 @@ function handleFile(req, res) {
     sampleFile = req.files.sampleFile;
     fileExtention = sampleFile.name.slice(sampleFile.name.indexOf('.'),sampleFile.name.length)
     sampleFile.name = id + '.png'
-    uploadPath = '/home/lumi/ResponsiveChatroom/src/client/images/' + sampleFile.name;
+    uploadPath = `${__dirname}/images/${sampleFile.name}`;
     list[list.findIndex(user => user.id ==  id)].icon = `images/${sampleFile.name}`  //Register icon to user (found by id)
     console.log('file size: ', req.files.sampleFile.size)
     sampleFile.mv(uploadPath, function (err) {

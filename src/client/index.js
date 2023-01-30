@@ -15,9 +15,14 @@ const sendButton = document.querySelector("#paperAirplane")
 const uploadButton = document.querySelector('#uploadButton')
 const fileInput = document.querySelector('#fileupload')
 const submitFileButton =document.querySelector('#submitFile')
+const mainPicture = document.querySelector('.userProfilePicture')
+let listIMGs = []
+let messegerIMGs = []
+mainPicture.src = 'images/'+storageID+'.png'
 let date = new Date()
 let noEdit = true
 let otherUserTexts = []
+let changedPicture = false
 otherUserTexts.push({date: '', name: '', text: '', type: '', id: '', icon: ''})
 
 // file submit
@@ -59,8 +64,15 @@ webSocket.addEventListener("message", (e) => {
  })
 
 
-
-
+//CHECK MAIN IMG SRC
+mainPicture.addEventListener('error',e=>{
+    mainPicture.src = 'images/default.png'
+})
+messegerIMGs.forEach(img=>{
+    img.addEventListener('error',e=>{
+        img.src = 'images/default.png'
+    })
+})
  //FUNCTIONS 
 
 function MessageType(type) {
@@ -118,8 +130,6 @@ function sendSaveName() {
     if (!textfieldName.value == '') {
         saveNameButton.id = 'saveButtonDisabled'
         editNameButton.id = 'editNameButton'
-        // submitFileButton.disabled = false
-        // sendButton.disabled = false
         textfieldMessage.disabled = false
         window.localStorage.setItem('name', textfieldName.value)
         console.log('savename',noEdit)
@@ -135,6 +145,7 @@ function sendSaveName() {
         let messageToServer = { text: name, type: 'name', id: storeID }
         webSocket.send(JSON.stringify(messageToServer))
     }
+    refreshList()
 }
 
 function nameEdit() {
@@ -153,8 +164,15 @@ function handleIfList(listItem) {
    
     let userList = listItem.list
     userList.forEach(elem => {
+    let dateRightNow = new Date()
     let name ='';
     let message = '';
+    let lastOnline =elem.dateHours;
+    if(elem.dateHours!='online'){
+        lastOnline = String(((dateRightNow.getDay()+1) - elem.dateDay)*24 + ((dateRightNow.getHours()+1) - elem.dateHours))+'h'
+        console.log(((dateRightNow.getDay()+1) - elem.dateDay)*24 + ((dateRightNow.getHours()+1) - elem.dateHours))
+    }
+            
     if(elem.name.length> 15)
         name = elem.name.slice(0,14) + '...'
     else
@@ -166,24 +184,25 @@ function handleIfList(listItem) {
     list.innerHTML += `
             <li class="listItemsContainer">  
                 <div id="imgContainerList">
-                    <img src="${elem.icon}" id="listUserIcon" alt="">
+                    <img src="${`images/${elem.id}.png`}" id="listUserIcon" alt=""> 
                     <div id="${elem.status}"></div>
                 </div>
                 <div class="listNameMessageContainer">
                     <div id="userListName">${name}<div class="tooltip"">${elem.name}</div></div>
                     <div id="userLastMessage">${message}</div>
                 </div>
-                <div id="dateContainer"><div id="lastOnline">48h</div></div>
+                <div id="dateContainer"><div id="lastOnline">${lastOnline}</div></div>
             </li>`             
     })
+    settleListIcons()
 }
 
 
 function handleIfHistory(messageInfo) {
-    let datenow = new Date()
-    if (datenow.getSeconds()-date.getSeconds() < 3){
+    if (messageInfo.requesterID === storageID){
         chat.innerHTML += messageConstructor(messageInfo)
         chat.scrollTop +=  maxScrollHeight()
+        settleChatIcons()
         refreshList()
     }
 }
@@ -191,7 +210,6 @@ function handleIfHistory(messageInfo) {
 
 function refreshList() {
     list.innerHTML = ''
-    settleIcons()
     webSocket.send(JSON.stringify({ type: 'list' }))
 }
 
@@ -212,7 +230,8 @@ function sendInfoFromLocalStorage() {
     console.log('sendInfoFromLocalStorage')
     if (!(localStorage.getItem('ClientID'))){
         window.localStorage.setItem('ClientID', clientUniqueIDGenerator()) //REGISTER ID TO STORAGE
-        hiddenIDfield.value = localStorage.getItem('ClientID')}
+        hiddenIDfield.value = localStorage.getItem('ClientID')
+    }
     else {
         saveNameButton.id='saveButtonDisabled'
         // editNameButton.classList.remove('editNameButtonDisabled')
@@ -226,7 +245,7 @@ function sendInfoFromLocalStorage() {
         let messageToServer = { text: user, type: 'name', id: clientID }
         textfieldName.value = user
         webSocket.send(JSON.stringify(messageToServer))
-        webSocket.send(JSON.stringify({ type: 'history' }))
+        webSocket.send(JSON.stringify({ type: 'history',id:clientID}))
     }
     refreshList()
 }
@@ -248,7 +267,7 @@ function choiceBy(type, data) {
 
 function messageConstructor(messageInfo){
     let message
-    if(messageInfo.text.length > 29){
+    if(messageInfo.text.length > 14){
         if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
             message = `<div class="mainUser" id='text' data-text-type="textOverflow">${messageInfo.text}</div>` 
             otherUserTexts.push(messageInfo)
@@ -259,10 +278,10 @@ function messageConstructor(messageInfo){
                 message = `<div class="otherUser" id='text' data-text-type="textonly">${messageInfo.text}</div>` 
             else{
                 otherUserTexts.push(messageInfo)
+                // messegerIMGs.push()
                 message = `
                 <div class="messageContainer">
-                    <label id="hiddenlabelID">${storageID}</label>
-                    <img class="chatImages" src="${messageInfo.icon}"></img>
+                    <img class="chatImages" src="${`images/${messageInfo.id}.png`}"></img>
                     <div class="otherUser" id='text' >${messageInfo.text}</div>
                 </div>`  
             }
@@ -277,10 +296,10 @@ function messageConstructor(messageInfo){
                 message = `<div class="otherUser" data-text-type="textonly">${messageInfo.text}</div>` 
             else{
                 otherUserTexts.push(messageInfo)
+                // messegerIMGs.push()
                 message = `
                 <div class="messageContainer">
-                    <label id="hiddenlabelID">${storageID}</label>
-                    <img class="chatImages" src="${messageInfo.icon}"></img>
+                    <img class="chatImages" src="${`images/${messageInfo.id}.png`}"></img>
                     <div class="otherUser" >${messageInfo.text}</div>
                 </div>`  
             }
@@ -290,16 +309,21 @@ function messageConstructor(messageInfo){
 }
 
 function refreshPage(){
-    setTimeout( ()=>{window.location.reload()} , 500 )  
+    setTimeout( ()=>{ window.location.reload()} , 500 ) 
 }
-function settleIcons(){
-    //document.getElementById('make-image').src="/path/to/images/" + selected_text + ".jpg";
-   let userIcons = document.querySelectorAll('.chatImages')
-    console.log(userIcons)
-  let  userIDs = document.querySelectorAll('#hiddenlabelID').textContent
-    console.log(userIDs)
-    userIcons.forEach((icon,i)=>{ 
-        icon.src = 'images/'+userIDs[i]+'.png'
-         console.log( icon.src,'  ',userIDs[i])  
+
+function settleListIcons(){
+ document.querySelectorAll('#listUserIcon').forEach(img=>{
+    img.addEventListener('error',e=>{
+        img.src='images/default.png '
     })
+ })
 }
+ function settleChatIcons(){
+    document.querySelectorAll('.chatImages').forEach(img=>{
+        img.addEventListener('error',e=>{
+            img.src='images/default.png '
+        })
+    }) 
+ }
+
