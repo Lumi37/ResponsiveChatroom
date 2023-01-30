@@ -178,6 +178,7 @@ ul {
 .searchContainer>div>input {
     width: 70%;
     border: none;
+    color:rgb(10, 226, 255); 
     background-color: #3e3e3f;
     text-align: center;
     font-size: 1.5rem;
