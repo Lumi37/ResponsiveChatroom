@@ -1,4 +1,4 @@
-const webSocket = new WebSocket('ws://localhost:3001');
+const webSocket = new WebSocket(`ws://${location.hostname}:3001`);//('ws://localhost:3001')
 const textfieldName = document.querySelector('#username')
 const saveNameButton = document.querySelector("#saveButton")
 const textfieldMessage = document.querySelector('#typingArea')
@@ -70,7 +70,6 @@ messegerIMGs.forEach(img=>{
         img.src = 'images/default.png'
     })
 })
-
 
 
 

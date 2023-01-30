@@ -1,6 +1,5 @@
 import express from 'express'
 import fileUpload from 'express-fileupload'
-import fs from 'fs/promises'
 import { WebSocketServer } from 'ws'
 // import _ from 'lodash'
 
