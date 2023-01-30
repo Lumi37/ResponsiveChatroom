@@ -14,7 +14,6 @@ const uploadButton = document.querySelector('#uploadButton')
 const fileInput = document.querySelector('#fileupload')
 const submitFileButton =document.querySelector('#submitFile')
 const mainPicture = document.querySelector('.userProfilePicture')
-let listIMGs = []
 let messegerIMGs = []
 mainPicture.src = 'images/'+storageID+'.png'
 let date = new Date()
@@ -71,6 +70,15 @@ messegerIMGs.forEach(img=>{
         img.src = 'images/default.png'
     })
 })
+
+
+
+
+
+
+
+
+
  //FUNCTIONS 
 
 function MessageType(type) {
