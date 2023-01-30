@@ -214,7 +214,7 @@ function handleFile(req, res) {
     sampleFile = req.files.sampleFile;
     fileExtention = sampleFile.name.slice(sampleFile.name.indexOf('.'),sampleFile.name.length)
     sampleFile.name = id + '.png'
-    uploadPath = `${__dirname}/images/${sampleFile.name}`;
+    uploadPath = `${__dirname}../client/images/${sampleFile.name}`;
     list[list.findIndex(user => user.id ==  id)].icon = `images/${sampleFile.name}`  //Register icon to user (found by id)
     console.log('file size: ', req.files.sampleFile.size)
     sampleFile.mv(uploadPath, function (err) {

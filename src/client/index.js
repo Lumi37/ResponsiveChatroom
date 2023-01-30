@@ -96,6 +96,7 @@ function handleIfMessage(messageInfo) {
     console.log(message)
     chat.innerHTML += message
     chat.scrollTop +=  maxScrollHeight()
+    settleChatIcons()
     refreshList()
     
 }
