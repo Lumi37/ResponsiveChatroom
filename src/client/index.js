@@ -1,5 +1,9 @@
+
+import {settleChatIcons,settleListIcons} from './settleIcons.js'
+
 const webSocket = new WebSocket(`ws://${location.hostname}:3001`);//('ws://localhost:3001')
 document.querySelector('#uploadForm').action = location.href
+const storageID = localStorage.getItem('ClientID')
 const textfieldName = document.querySelector('#username')
 const saveNameButton = document.querySelector("#saveButton")
 const textfieldMessage = document.querySelector('#typingArea')
@@ -7,16 +11,13 @@ const chat = document.querySelector('#messagesDisplay')
 const list = document.querySelector('#list')
 const refreshButton = document.querySelector('#refreshList')
 const editNameButton = document.querySelector('#editNameButton')
-const storageID = localStorage.getItem('ClientID')
 const hiddenUsernamefield = document.querySelector('#hiddenusername')
 const hiddenIDfield = document.querySelector('#userID')
 const sendButton = document.querySelector("#paperAirplane")
 const uploadButton = document.querySelector('#uploadButton')
 const fileInput = document.querySelector('#fileupload')
 const submitFileButton =document.querySelector('#submitFile')
-const mainPicture = document.querySelector('.userProfilePicture')
-let messegerIMGs = []
-mainPicture.src = 'images/'+storageID+'.png'
+
 let date = new Date()
 let noEdit = true
 let otherUserTexts = []
@@ -63,15 +64,6 @@ webSocket.addEventListener("message", (e) => {
 
 
 //CHECK MAIN IMG SRC
-mainPicture.addEventListener('error',e=>{
-    mainPicture.src = 'images/default.png'
-})
-messegerIMGs.forEach(img=>{
-    img.addEventListener('error',e=>{
-        img.src = 'images/default.png'
-    })
-})
-
 
 
 
@@ -319,18 +311,4 @@ function refreshPage(){
     setTimeout( ()=>{ window.location.reload()} , 500 ) 
 }
 
-function settleListIcons(){
- document.querySelectorAll('#listUserIcon').forEach(img=>{
-    img.addEventListener('error',e=>{
-        img.src='images/default.png '
-    })
- })
-}
- function settleChatIcons(){
-    document.querySelectorAll('.chatImages').forEach(img=>{
-        img.addEventListener('error',e=>{
-            img.src='images/default.png '
-        })
-    }) 
- }
 
