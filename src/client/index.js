@@ -1,4 +1,5 @@
 const webSocket = new WebSocket(`ws://${location.hostname}:3001`);//('ws://localhost:3001')
+document.querySelector('#uploadForm').action = location.href
 const textfieldName = document.querySelector('#username')
 const saveNameButton = document.querySelector("#saveButton")
 const textfieldMessage = document.querySelector('#typingArea')
