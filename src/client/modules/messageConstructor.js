@@ -1,5 +1,5 @@
 
-import  {textfieldName} from './index.js'
+import  {textfieldName} from '../index.js'
 
 let otherUserTexts = []
 otherUserTexts.push({date: '', name: '', text: '', type: '', id: '', icon: ''})
