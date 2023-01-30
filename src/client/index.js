@@ -1,10 +1,11 @@
 
 import {settleChatIcons,settleListIcons} from './settleIcons.js'
+import { messageConstructor } from './messageconstructor.js';
 
 const webSocket = new WebSocket(`ws://${location.hostname}:3001`);//('ws://localhost:3001')
 document.querySelector('#uploadForm').action = location.href
 const storageID = localStorage.getItem('ClientID')
-const textfieldName = document.querySelector('#username')
+export const textfieldName = document.querySelector('#username')
 const saveNameButton = document.querySelector("#saveButton")
 const textfieldMessage = document.querySelector('#typingArea')
 const chat = document.querySelector('#messagesDisplay')
@@ -17,12 +18,8 @@ const sendButton = document.querySelector("#paperAirplane")
 const uploadButton = document.querySelector('#uploadButton')
 const fileInput = document.querySelector('#fileupload')
 const submitFileButton =document.querySelector('#submitFile')
-
-let date = new Date()
 let noEdit = true
-let otherUserTexts = []
-let changedPicture = false
-otherUserTexts.push({date: '', name: '', text: '', type: '', id: '', icon: ''})
+
 
 // file submit
 uploadButton.addEventListener('click',e=>{
@@ -264,48 +261,7 @@ function choiceBy(type, data) {
 }
 
 
-function messageConstructor(messageInfo){
-    let message
-    if(messageInfo.text.length > 14){
-        if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
-            message = `<div class="mainUser" id='text' data-text-type="textOverflow">${messageInfo.text}</div>` 
-            otherUserTexts.push(messageInfo)
-        }
-        else{
-            console.log('CHOICE--->',messageInfo.icon === otherUserTexts[otherUserTexts.length-1].icon)
-            if(messageInfo.id === otherUserTexts[otherUserTexts.length-1].id)
-                message = `<div class="otherUser" id='text' data-text-type="textonly">${messageInfo.text}</div>` 
-            else{
-                otherUserTexts.push(messageInfo)
-                // messegerIMGs.push()
-                message = `
-                <div class="messageContainer">
-                    <img class="chatImages" src="${`images/${messageInfo.id}.png`}"></img>
-                    <div class="otherUser" id='text' >${messageInfo.text}</div>
-                </div>`  
-            }
-        }    
-    }else{
-        if (messageInfo.name == textfieldName.value && messageInfo.id == localStorage.getItem('ClientID')){
-            message = `<div class="mainUser">${messageInfo.text}</div>` 
-            otherUserTexts.push(messageInfo)
-        }
-        else{
-            if(messageInfo.id === otherUserTexts[otherUserTexts.length-1].id)
-                message = `<div class="otherUser" data-text-type="textonly">${messageInfo.text}</div>` 
-            else{
-                otherUserTexts.push(messageInfo)
-                // messegerIMGs.push()
-                message = `
-                <div class="messageContainer">
-                    <img class="chatImages" src="${`images/${messageInfo.id}.png`}"></img>
-                    <div class="otherUser" >${messageInfo.text}</div>
-                </div>`  
-            }
-        } 
-    }
-    return message
-}
+
 
 function refreshPage(){
     setTimeout( ()=>{ window.location.reload()} , 500 ) 

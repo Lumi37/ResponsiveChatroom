@@ -1,8 +1,7 @@
 // import { storageID } from "./index.js"
 
-const storageID = localStorage.getItem('ClientID')
 const mainPicture = document.querySelector('.userProfilePicture')
-mainPicture.src = 'images/'+storageID +'.png'
+mainPicture.src = 'images/'+localStorage.getItem('ClientID') +'.png'
 
 mainPicture.addEventListener('error',e=>{
     mainPicture.src = 'images/default.png'
