@@ -21,6 +21,8 @@ export const list = document.querySelector('#list')
 export const saveNameButton = document.querySelector("#saveButton")
 export let preferedMode = localStorage.getItem('preference')
 export let noEdit = true
+export const sunButton = document.querySelector('#darkmode')
+export const moonButton = document.querySelector('#lightmode')
 const chat = document.querySelector('#messagesDisplay')
 const storageID = localStorage.getItem('ClientID')
 const refreshButton = document.querySelector('#refreshList')
@@ -28,7 +30,6 @@ const sendButton = document.querySelector("#paperAirplane")
 const uploadButton = document.querySelector('#uploadButton')
 const fileInput = document.querySelector('#fileupload')
 const submitFileButton =document.querySelector('#submitFile')
-const lightDarkMode = document.querySelector('#darkmode')
 
 
 // file submit
@@ -74,9 +75,17 @@ webSocket.addEventListener("message", (e) => {
     choiceBy(MessageType(data.type), data)
  })
 
-lightDarkMode.addEventListener('click',e=>{
-    preference(preferedMode)
-})
+    sunButton.addEventListener('click',e=>{
+            preference('light')
+    })
+
+    
+
+
+    moonButton.addEventListener('click',e=>{
+            preference('dark')
+    })
+
  //FUNCTIONS 
 
 

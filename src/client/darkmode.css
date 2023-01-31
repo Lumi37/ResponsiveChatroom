@@ -27,6 +27,9 @@ body {
     cursor: pointer;
     padding: 0.125rem;
 }
+#darkmodeDisabled{
+display: none;
+}
 #darkmode:active {
     opacity: 1;
     box-shadow: 0.063rem 0.063rem 0.5rem 0.063rem #9e9c9c;

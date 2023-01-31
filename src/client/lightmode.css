@@ -13,7 +13,7 @@ body {
     padding: 0.563rem;
 }
 
-#darkmode {
+#lightmode {
     width: 3.125rem;
     height: 3.125rem;
     margin-top: 1.25rem;
@@ -27,22 +27,25 @@ body {
     cursor: pointer;
     padding: 0.125rem;
 }
-#darkmode:active {
+#lightmodeDisabled {
+    display: none;
+}
+#lightmode:active {
     opacity: 1;
     box-shadow: 0.063rem 0.063rem 0.5rem 0.063rem #9e9c9c;
 }
-#darkmode .tooltip {
+#lightmode .tooltip {
     position: relative;
     z-index: 1;
     left: 3rem;
     top: 3rem;
 }
 
-#darkmode:hover .tooltip {
+#lightmode:hover .tooltip {
     opacity: 1;
 }
 
-#darkmode:hover {
+#lightmode:hover {
     background-color: #f5eded;
 }
 
@@ -384,10 +387,6 @@ ul {
     box-shadow: 0.063rem 0.063rem 0.5rem 0.063rem #9e9c9c;
 }
 
-/* .userIconUsernameContainer>div {
-    display: grid;
-    grid-template-columns: auto auto;
-} */
 
 #uploadForm {
     display: none;
@@ -397,12 +396,6 @@ ul {
     display: none;
 }
 
-/* 
-.userIconUsernameContainer>div {
-    display: grid;
-    grid-template-columns: auto auto auto auto;
-
-} */
 .userProfilePicture {
     width: 3.5rem;
     height: 3.5rem;
@@ -420,21 +413,6 @@ ul {
 .imagesalign {
     display: flex;
 }
-
-/* .saveNameButton {
-    width: 3.125rem;
-    height: 3.125rem;
-    margin-top: 1.25rem;
-    margin-left: 0.313rem;
-    background: url('images/save.png');
-    background-size: 3.125rem;
-    background-position: center;
-    background-color: white;
-    border-radius: 50%;
-    border: 0.063rem solid grey;
-    cursor: pointer;
-    padding: 0.125rem;
-} */
 
 #editNameButton {
     width: 3.125rem;
@@ -456,7 +434,7 @@ ul {
     height: 3.125rem;
     margin-top: 1.25rem;
     margin-left: 0.313rem;
-    background: url('images/save.png');
+    background: url('images/lightmode/save.png');
     background-size: 3.125rem;
     background-position: center;
     background-color: white;
@@ -472,7 +450,7 @@ ul {
     margin-top: 1.25rem;
     margin-left: 0.313rem;
     /* pointer-events: none; */
-    background: url('images/save.png');
+    background: url('images/lightmode/save.png');
     background-size: 3.125rem;
     background-position: center;
     background-color: white;
