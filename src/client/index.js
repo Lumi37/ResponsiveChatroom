@@ -6,9 +6,12 @@ import { sendMessageToServer } from './modules/sendMessageToServer.js';
 import { sendSavedNameToServer } from './modules/sendSavedNameToServer.js';
 import { listConstructor } from './modules/listConstructor.js';
 import { MessageType } from './modules/MessageType.js';
+import { preference } from './modules/light-darkmode.js';
+import { clientUniqueIDGenerator } from './modules/randomIDGenerator.js';
 
 const webSocket = new WebSocket(`ws://${location.hostname}:3001`);//('ws://localhost:3001')
 document.querySelector('#uploadForm').action = location.href
+
 export const textfieldName = document.querySelector('#username')
 export const editNameButton = document.querySelector('#editNameButton')
 export const hiddenUsernamefield = document.querySelector('#hiddenusername')
@@ -16,6 +19,8 @@ export const hiddenIDfield = document.querySelector('#userID')
 export const textfieldMessage = document.querySelector('#typingArea')
 export const list = document.querySelector('#list')
 export const saveNameButton = document.querySelector("#saveButton")
+export let preferedMode = localStorage.getItem('preference')
+export let noEdit = true
 const chat = document.querySelector('#messagesDisplay')
 const storageID = localStorage.getItem('ClientID')
 const refreshButton = document.querySelector('#refreshList')
@@ -23,7 +28,7 @@ const sendButton = document.querySelector("#paperAirplane")
 const uploadButton = document.querySelector('#uploadButton')
 const fileInput = document.querySelector('#fileupload')
 const submitFileButton =document.querySelector('#submitFile')
-export let noEdit = true
+const lightDarkMode = document.querySelector('#darkmode')
 
 
 // file submit
@@ -69,9 +74,10 @@ webSocket.addEventListener("message", (e) => {
     choiceBy(MessageType(data.type), data)
  })
 
-
+lightDarkMode.addEventListener('click',e=>{
+    preference(preferedMode)
+})
  //FUNCTIONS 
-
 
 
 function handleIfMessage(messageInfo) {
@@ -92,6 +98,7 @@ function nameEdit() {
     console.log('edit',noEdit)
 
 }
+ 
 
 
 function handleIfHistory(messageInfo) {
@@ -110,15 +117,7 @@ function refreshList() {
 }
 
 
-//GENERATES RANDOM ID
-function clientUniqueIDGenerator() {
-    let datenow = new Date()
-    function idGen() {
 
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-    return idGen() + idGen() + '-' + idGen() + String(datenow.getMilliseconds())
-}
 
 
 //SENDING USER INFO FROM LOCALSTORAGE
@@ -126,13 +125,12 @@ function sendInfoFromLocalStorage() {
     console.log('sendInfoFromLocalStorage')
     if (!(localStorage.getItem('ClientID'))){
         window.localStorage.setItem('ClientID', clientUniqueIDGenerator()) //REGISTER ID TO STORAGE
+        window.localStorage.setItem('preference','dark')
         hiddenIDfield.value = localStorage.getItem('ClientID')
     }
     else {
+        preference(preferedMode)
         saveNameButton.id='saveButtonDisabled'
-        // editNameButton.classList.remove('editNameButtonDisabled')
-        // editNameButton.classList.add('editNameButton')
-        // sendButton.disabled = false 
         textfieldMessage.disabled = false
         const user = localStorage.getItem('name')
         let clientID = localStorage.getItem('ClientID');
