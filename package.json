@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "deploy": "rsync -avz ../ResponsiveChatroom/* kostas:chat",
+    "manual": "node src/server/index.cjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
