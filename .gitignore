@@ -1,6 +1,7 @@
 node_modules
+images
 
 
 !src/client/images/lightmode/
 !src/client/images/darkmode/
-!src/client/images/*
+!src/client/images/default.png
