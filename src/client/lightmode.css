@@ -27,7 +27,7 @@ body {
     cursor: pointer;
     padding: 0.125rem;
 }
-#lightmodeDisabled {
+.lightmodeDisabled {
     display: none;
 }
 #lightmode:active {

@@ -3,7 +3,7 @@ import { sunButton,moonButton } from "../index.js"
 
 export function preference(preferedMode){
     if (preferedMode === 'light'){
-        sunButton.setAttribute('display','none')
+        sunButton.classList.add('darkmodeDisabled')
         document.querySelector('#searchicon').src = 'images/lightmode/searchicon.png'
         try {
             
@@ -12,13 +12,14 @@ export function preference(preferedMode){
             
         }
         localStorage.setItem('preference','light')
-        moonButton.removeAttribute('display')  
+        moonButton.classList.remove('lightmodeDisabled')
+        
     }
 
 
        
     if(preferedMode ==='dark'){
-        moonButton.setAttribute('display','none')
+        moonButton.classList.add('lightmodeDisabled')
         document.querySelector('#searchicon').src = 'images/darkmode/searchicon.png'
         try {
             document.querySelector('link[href="lightmode.css"]').href = 'darkmode.css' 
@@ -27,7 +28,7 @@ export function preference(preferedMode){
         }
         
         localStorage.setItem('preference','dark')
-        sunButton.removeAttribute('display')  
+        sunButton.classList.remove('darkmodeDisabled')
     }
 
             

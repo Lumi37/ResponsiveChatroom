@@ -7,6 +7,9 @@ html {
 }
 body {
     margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #18191a;
 }
 
 #text {
@@ -27,7 +30,7 @@ body {
     cursor: pointer;
     padding: 0.125rem;
 }
-#darkmodeDisabled{
+.darkmodeDisabled{
 display: none;
 }
 #darkmode:active {
@@ -142,9 +145,10 @@ ul {
 .container {
     background-color: rgb(39, 225, 231);
     display: grid;
-    grid-template-columns: 0.4fr auto;
-    grid-template-rows: 0.1fr auto;
+    grid-template-columns: 0.3fr 0.7fr;
+    grid-template-rows: 0.1fr 0.9fr;
     height: 100vh;
+    width: 100vw;
 }
 
 .container>div {
@@ -602,7 +606,7 @@ ul {
     border: 0.063rem solid rgb(0, 248, 255,33%);
     border-radius: 0.313rem;
     background-color: #18191a;
-    height: 4.8rem;
+    /* height: 4.8rem; */
     padding: 1.3rem;
     padding-bottom: 1rem;
 }
