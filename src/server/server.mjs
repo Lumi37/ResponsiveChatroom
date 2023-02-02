@@ -1,5 +1,6 @@
 import express from 'express'
 import fileUpload from 'express-fileupload'
+import { main,client } from './modules/mongoDB.js'
 import { WebSocketServer } from 'ws'
 import { identifyUserById } from './modules/identifyUserByID.mjs'
 import { setNewUserInfo,setUserInfo } from './modules/setupUserInfo.mjs'
@@ -11,6 +12,7 @@ import { handleIfHistory } from './modules/handleHistory.mjs'
 // import _ from 'lodash'
 
 const server = express()
+
 const wsServer = new WebSocketServer({ port: 3001 })
 const __dirname = new URL('.', import.meta.url).pathname
 server.use(express.static(`${__dirname}/../client/`))
@@ -24,11 +26,16 @@ let ConnectedClients = 0
 export let users = [];
 export let list = [];
 export let history = []
+main()
+    .then(arg => console.log(arg))
+    .catch(console.error)
+    .finally(() => client.close());
 
-console.log(__dirname)
 server.post('/', function (req, res) {
     handleFile(req, res)
 });
+
+
 
 
 
@@ -71,7 +78,7 @@ wsServer.on("connection", (ws) => {
     ws.on('close', () => {
         ConnectedClients -= 1
         try {
-            let listIndex = list.findIndex(user => user.id === ws.id)
+            let listIndex = list.findIndex(user => user.id === ws.id) //byid
             let dateOffline = new Date()
             list[listIndex].dateHours = dateOffline.getHours()+1
             list[listIndex].dateDay = dateOffline.getDay()+1
