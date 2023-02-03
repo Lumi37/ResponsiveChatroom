@@ -1,6 +1,6 @@
 import express from 'express'
 import fileUpload from 'express-fileupload'
-import { main,client } from './modules/mongoDB.js'
+//import { tutorial,client } from './modules/mongoDB.js'
 import { WebSocketServer } from 'ws'
 import { identifyUserById } from './modules/identifyUserByID.mjs'
 import { setNewUserInfo,setUserInfo } from './modules/setupUserInfo.mjs'
@@ -26,10 +26,10 @@ let ConnectedClients = 0
 export let users = [];
 export let list = [];
 export let history = []
-main()
-    .then(arg => console.log(arg))
-    .catch(console.error)
-    .finally(() => client.close());
+// tutorial()
+//     .then(arg => console.log(arg))
+//     .catch(console.error)
+//     .finally(() => client.close());
 
 server.post('/', function (req, res) {
     handleFile(req, res)
