@@ -1,4 +1,4 @@
-import { list } from "../server.mjs"
+import { list,__dirname } from "../server.mjs"
  
 export function handleFile(req, res) {
     console.log(req)

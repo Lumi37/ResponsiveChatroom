@@ -14,7 +14,7 @@ import { handleIfHistory } from './modules/handleHistory.mjs'
 const server = express()
 
 const wsServer = new WebSocketServer({ port: 3001 })
-const __dirname = new URL('.', import.meta.url).pathname
+export const __dirname = new URL('.', import.meta.url).pathname
 server.use(express.static(`${__dirname}/../client/`))
 server.use(express.json());
 server.use(fileUpload({
