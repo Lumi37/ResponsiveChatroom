@@ -137,10 +137,10 @@ display: none;
     position: relative;
 }
 
-ul {
-    padding: 0;
-    list-style-type: none;
-}
+    ul {
+        padding: 0;
+        list-style-type: none;
+    }
 
 .container {
     background-color: rgb(39, 225, 231);
@@ -212,7 +212,6 @@ ul {
     margin-bottom: 0.2rem;
     grid-template-columns: max-content 0.5fr 1fr;
     border: 0.063rem solid rgb(0, 248, 255,33%);
-    transition: border 0.2s;
 }
 
 .listItemsContainer>div {
@@ -627,7 +626,7 @@ ul {
     font-size: 1.563rem;
     grid-column: 2/5;
     border: none;
-    color: rgb(10, 226, 255);
+    color: rgb(73, 73, 73);
     background-color: #18191a;
 }
 
